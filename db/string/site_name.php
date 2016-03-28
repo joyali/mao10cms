@@ -1,0 +1,1 @@
+<?php die("forbidden"); ?>Mao10CMS

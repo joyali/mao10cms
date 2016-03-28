@@ -1,0 +1,1 @@
+<?php die("forbidden"); ?>/public/img/upload.jpg
