@@ -1,13 +1,13 @@
 <?php
 error_reporting(0);
-
+//定义根目录
+define('ROOT_PATH',dirname(__FILE__));
+session_save_path(ROOT_PATH.'/upload/session');
+session_id(SID);
 session_start();
 header("Content-Type: text/html; charset=UTF-8");
 
-//定义根目录
-define('ROOT_PATH',dirname(__FILE__));
 define('DB_TYPE','mdb');
-
 //数据库连接
 if(DB_TYPE=='redis') :
 	try {
