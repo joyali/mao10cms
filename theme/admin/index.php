@@ -93,6 +93,18 @@
 				</div>
 				<div class="form-group">
 					<label>
+						商品模块
+					</label>
+					<select class="form-control" name="dealmod">
+						<option value="1" <?php if($redis->get('dealmod')==1) echo 'selected'; ?>>关闭</option>
+						<option value="0" <?php if($redis->get('dealmod')!=1) echo 'selected'; ?>>开启</option>
+					</select>
+				    <p class="help-block">
+				        关闭模块后，需要在<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=nav">导航设置</a>中移除对应模块相关链接。
+				    </p>
+				</div>
+				<div class="form-group">
+					<label>
 						每页文章数量
 					</label>
 					<input type="text" name="page_size" class="form-control" value="<?php echo $redis->get('page_size'); ?>" placeholder="">

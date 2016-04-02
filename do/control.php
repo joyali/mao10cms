@@ -7,6 +7,7 @@ if($redis->hget('user:'.maoo_user_id(),'user_level')==10) :
 	$redis->set('theme',$_POST['theme']);
 	$redis->set('promod',$_POST['promod']);
 	$redis->set('bbsmod',$_POST['bbsmod']);
+	$redis->set('dealmod',$_POST['dealmod']);
 	$redis->set('page_size',$_POST['page_size']);
 	$redis->set('topic_permission',$_POST['topic_permission']);
 	$redis->set('topic_number',$_POST['topic_number']);

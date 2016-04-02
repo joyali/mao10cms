@@ -11,8 +11,10 @@ $act = strtolower(isset($a) ? $a : "index");
 if($redis->get('promod')==1 && $mod=='pro') :
     $mod = 'index';
     $act = 'index';
-endif;
-if($redis->get('bbsmod')==1 && $mod=='bbs') :
+elseif($redis->get('bbsmod')==1 && $mod=='bbs') :
+    $mod = 'index';
+    $act = 'index';
+elseif($redis->get('dealmod')==1 && $mod=='deal') :
     $mod = 'index';
     $act = 'index';
 endif;

@@ -109,6 +109,13 @@
 									</a>
 								</li>
                                 <?php endif; ?>
+                                <?php if($redis->get('dealmod')!=1) : ?>
+								<li>
+									<a href="<?php echo maoo_url('user','deal'); ?>">
+										<i class="glyphicon glyphicon-tint"></i> 我的项目
+									</a>
+								</li>
+                                <?php endif; ?>
 								<li>
 									<a href="#" data-toggle="modal" data-target="#coinsModal">
 										<i class="glyphicon glyphicon-credit-card"></i> 我的财产
