@@ -13,18 +13,6 @@
         </div>
     </h1>
     <div class="row">
-        <?php 
-			$page_now = $_GET['page'];
-			$page_size = $redis->get('page_size');
-			if(empty($page_now) || $page_now<1) :
-				$page_now = 1;
-			else :
-				$page_now = $_GET['page'];
-			endif;
-			$offset = ($page_now-1)*$page_size;
-            $count = $redis->scard('deal_id');
-            $db = $redis->sort('deal_id',array('sort'=>'desc','limit'=>array($offset,$page_size)));
-		?>
 		<?php foreach($db as $page_id) : $author = $redis->hget('deal:'.$page_id,'author'); $status = maoo_deal_status($page_id); ?>
         <div class="col-sm-4 col">
             <a class="thumbnail deal-index-list pr" href="<?php echo maoo_url('deal','single',array('id'=>$page_id)); ?>">

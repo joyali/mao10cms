@@ -6,6 +6,16 @@ class Maoo {
 			$maoo_title_page = ' - 第'.$_GET['page'].'页';
 		endif;
 		$maoo_title = '众筹'.$maoo_title_page.' - '.$redis->get('site_name');
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+            $page_now = 1;
+        else :
+            $page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $count = $redis->scard('deal_id');
+        $db = $redis->sort('deal_id',array('sort'=>'desc','limit'=>array($offset,$page_size)));
 		include ROOT_PATH.'/theme/'.maoo_theme().'/deal-index.php';
 	}
 	public function reward(){
