@@ -6,6 +6,16 @@ class Maoo {
 			$maoo_title_page = ' - 第'.$_GET['page'].'页';
 		endif;
 		$maoo_title = '最新'.$maoo_title_page.' - '.$redis->get('site_name');
+        $count = $redis->scard('post_id');
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+            $page_now = 1;
+        else :
+            $page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $db = $redis->sort('post_id',array('sort'=>'desc','limit'=>array($offset,$page_size)));
 		include ROOT_PATH.'/theme/'.maoo_theme().'/latest.php';
 	}
 	public function publish(){
@@ -104,12 +114,32 @@ class Maoo {
 		if($_GET['id']>0) {
 			$id = $_GET['id'];
 			$maoo_title = $redis->hget('topic:'.$id,'title').' - '.$redis->get('site_name');
+            $count = $redis->scard('topic_post_id:'.$id);
+            $page_now = $_GET['page'];
+            $page_size = $redis->get('page_size');
+            if(empty($page_now) || $page_now<1) :
+                $page_now = 1;
+            else :
+                $page_now = $_GET['page'];
+            endif;
+            $offset = ($page_now-1)*$page_size;
+            $db = $redis->sort('topic_post_id:'.$id,array('sort'=>'desc','limit' =>array($offset,$offset+$page_size-1)));
 			include ROOT_PATH.'/theme/'.maoo_theme().'/post-topic-single.php';
 		} else {
 			if($_GET['page']>1) :
 				$maoo_title_page = ' - 第'.$_GET['page'].'页';
 			endif;
 			$maoo_title = '话题广场'.$maoo_title_page.' - '.$redis->get('site_name');
+            $count = $redis->zcard('topic_rank_list');
+			$page_now = $_GET['page'];
+			$page_size = $redis->get('page_size');
+			if(empty($page_now) || $page_now<1) :
+				$page_now = 1;
+			else :
+				$page_now = $_GET['page'];
+			endif;
+			$offset = ($page_now-1)*$page_size;
+			$db = $redis->zrevrange('topic_rank_list',$offset,$offset+$page_size-1);
 			include ROOT_PATH.'/theme/'.maoo_theme().'/post-topic.php';
 		}
 	}
@@ -146,6 +176,16 @@ class Maoo {
 			$maoo_title_page = ' - 第'.$_GET['page'].'页';
 		endif;
 		$maoo_title = maoo_term_title($id).$maoo_title_page.' - '.$redis->get('site_name');
+        $count = $redis->scard('term_topic_id:'.$id);
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+        	$page_now = 1;
+        else :
+        	$page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $db = $redis->sort('term_topic_id:'.$id,array('sort'=>'desc','limit' =>array($offset,$page_size)));
 		include ROOT_PATH.'/theme/'.maoo_theme().'/post-term.php';
 	}
 	public function tag(){
@@ -158,6 +198,16 @@ class Maoo {
 		endif;
 		$tag = $_GET['tag'];
 		$maoo_title = $tag.$maoo_title_page.' - '.$redis->get('site_name');
+        $count = $redis->scard('tag_post_id:'.$tag);
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+            $page_now = 1;
+        else :
+            $page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $db = $redis->sort('tag_post_id:'.$tag,array('sort'=>'desc','limit' =>array($offset,$offset+$page_size-1)));
 		include ROOT_PATH.'/theme/'.maoo_theme().'/post-tag.php';
 	}
 }

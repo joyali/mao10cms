@@ -4,18 +4,6 @@
     <div class="row post-list">
 		<div class="col-sm-9 col">
 		<h4 class="title mt-0 mb-10 hidden-xs hidden-sm">最新文章</h4>
-		<?php 
-			$count = $redis->scard('post_id');
-			$page_now = $_GET['page'];
-			$page_size = $redis->get('page_size');
-			if(empty($page_now) || $page_now<1) :
-				$page_now = 1;
-			else :
-				$page_now = $_GET['page'];
-			endif;
-			$offset = ($page_now-1)*$page_size;
-			$db = $redis->sort('post_id',array('sort'=>'desc','limit'=>array($offset,$page_size)));
-		?>
 		<?php foreach($db as $page_id) : ?>
 		<div class="post-<?php echo $page_id; ?> post mb-20">
 					<a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
@@ -51,11 +39,10 @@
 		<div class="col-sm-3 col hidden-xs hidden-sm">
 			<div class="home-side-box side-latest-post">
 				<h4 class="title mt-0 mb-10">
-					最新文章
-					<a class="pull-right" href="<?php echo maoo_url('post','latest'); ?>">更多</a>
+					热门文章
 				</h4>
 				<ul class="media-list">
-					<?php $db = $redis->sort('post_id',array('sort'=>'desc','limit'=>array(0,5))); ?>
+					<?php $db = $redis->zrevrange('rank_list',0,9); ?>
 					<?php foreach($db as $page_id) : ?>
 					<li class="media">
 						<div class="media-left">

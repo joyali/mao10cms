@@ -12,18 +12,6 @@
 	</ul>
 	<hr>
 	<div class="topic-list row">
-		<?php 
-			$count = $redis->scard('term_topic_id:'.$id);
-			$page_now = $_GET['page'];
-			$page_size = $redis->get('page_size');
-			if(empty($page_now) || $page_now<1) :
-				$page_now = 1;
-			else :
-				$page_now = $_GET['page'];
-			endif;
-			$offset = ($page_now-1)*$page_size;
-			$db = $redis->sort('term_topic_id:'.$id,array('sort'=>'desc','limit' =>array($offset,$page_size)));
-		?>
 		<?php foreach($db as $page_id) : ?>
 		<div class="topic-<?php echo $page_id; ?> topic col-xs-4 col">
 			<div class="topic-pr pr mb-20">

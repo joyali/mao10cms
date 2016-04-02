@@ -55,18 +55,6 @@
             <?php echo maoo_ad('post3'); ?>
 			<hr>
 			<div class="topic-post-list post-list">
-				<?php
-					$count = $redis->scard('topic_post_id:'.$id);
-					$page_now = $_GET['page'];
-					$page_size = $redis->get('page_size');
-					if(empty($page_now) || $page_now<1) :
-						$page_now = 1;
-					else :
-						$page_now = $_GET['page'];
-					endif;
-					$offset = ($page_now-1)*$page_size;
-					$db = $redis->sort('topic_post_id:'.$id,array('sort'=>'desc','limit' =>array($offset,$offset+$page_size-1)));
-				?>
 				<?php foreach($db as $page_id) : ?>
 				<div class="post-<?php echo $page_id; ?> post mb-20">
 					<a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">

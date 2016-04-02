@@ -5,18 +5,6 @@
 			<h1 class="title text-center">标签：<?php echo $tag; ?></h1>
 			<hr>
 			<div class="topic-post-list post-list">
-				<?php
-					$count = $redis->scard('tag_post_id:'.$tag);
-					$page_now = $_GET['page'];
-					$page_size = $redis->get('page_size');
-					if(empty($page_now) || $page_now<1) :
-						$page_now = 1;
-					else :
-						$page_now = $_GET['page'];
-					endif;
-					$offset = ($page_now-1)*$page_size;
-					$db = $redis->sort('tag_post_id:'.$tag,array('sort'=>'desc','limit' =>array($offset,$offset+$page_size-1)));
-				?>
 				<?php foreach($db as $page_id) : ?>
 				<div class="post-<?php echo $page_id; ?> post mb-20">
 					<a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">

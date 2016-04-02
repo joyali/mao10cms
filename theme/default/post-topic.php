@@ -31,18 +31,6 @@
 	<div class="clearfix"></div>
 	<hr>
 	<div class="topic-list row">
-		<?php 
-			$count = $redis->zcard('topic_rank_list');
-			$page_now = $_GET['page'];
-			$page_size = $redis->get('page_size');
-			if(empty($page_now) || $page_now<1) :
-				$page_now = 1;
-			else :
-				$page_now = $_GET['page'];
-			endif;
-			$offset = ($page_now-1)*$page_size;
-			$db = $redis->zrevrange('topic_rank_list',$offset,$offset+$page_size-1);
-		?>
 		<?php foreach($db as $page_id) : ?>
 		<div class="topic-<?php echo $page_id; ?> topic col-md-4 col">
 			<div class="topic-pr pr mb-20">
