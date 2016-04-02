@@ -60,6 +60,16 @@ class Maoo {
 			if($_GET['hometheme']=='pro' || $redis->get('hometheme')==2) :
 				include ROOT_PATH.'/theme/'.maoo_theme().'/pro-index.php';
 			else :
+                $count = $redis->zcard('rank_list');
+                $page_now = $_GET['page'];
+                $page_size = $redis->get('page_size');
+                if(empty($page_now) || $page_now<1) :
+                    $page_now = 1;
+                else :
+                    $page_now = $_GET['page'];
+                endif;
+                $offset = ($page_now-1)*$page_size;
+                $db = $redis->zrevrange('rank_list',$offset,$offset+$page_size-1);
 				include ROOT_PATH.'/theme/'.maoo_theme().'/index.php';
 			endif;
 		endif;
@@ -86,6 +96,16 @@ class Maoo {
 	public function authors(){
 		global $redis;
 		$maoo_title = '推荐作者 - '.$redis->get('site_name');
+        $count = $redis->zcard('user_rank_list');
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+            $page_now = 1;
+        else :
+            $page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $db = $redis->zrevrange('user_rank_list',$offset,$offset+$page_size-1);
 		include ROOT_PATH.'/theme/'.maoo_theme().'/authors.php';
 	}
 	public function search(){

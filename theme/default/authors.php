@@ -7,18 +7,6 @@
 					<i class="glyphicon glyphicon-th-list"></i> 推荐作者
 				</div>
 				<div class="panel-body">
-					<?php 
-						$count = $redis->zcard('user_rank_list');
-						$page_now = $_GET['page'];
-						$page_size = $redis->get('page_size');
-						if(empty($page_now) || $page_now<1) :
-							$page_now = 1;
-						else :
-							$page_now = $_GET['page'];
-						endif;
-						$offset = ($page_now-1)*$page_size;
-						$db = $redis->zrevrange('user_rank_list',$offset,$offset+$page_size-1);
-					?>
 					<ul class="media-list">
 						<?php foreach($db as $rank_user_id) : ?>
 						<li class="media">

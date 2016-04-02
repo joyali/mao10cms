@@ -31,18 +31,6 @@
 	<div class="row post-list">
 		<div class="col-sm-9 col">
 		<h4 class="title mt-0 mb-10 hidden-xs hidden-sm">热门文章</h4>
-		<?php
-			$count = $redis->zcard('rank_list');
-			$page_now = $_GET['page'];
-			$page_size = $redis->get('page_size');
-			if(empty($page_now) || $page_now<1) :
-				$page_now = 1;
-			else :
-				$page_now = $_GET['page'];
-			endif;
-			$offset = ($page_now-1)*$page_size;
-			$db = $redis->zrevrange('rank_list',$offset,$offset+$page_size-1);
-		?>
 		<?php foreach($db as $page_id) : $numad++; ?>
 		<div class="post-<?php echo $page_id; ?> post mb-20">
 					<a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
