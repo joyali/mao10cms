@@ -53,6 +53,7 @@ if($setup) :
 	$redis->sadd('post_type','post');
 	$redis->sadd('post_type','bbs');
 	$redis->sadd('post_type','pro');
+	$redis->sadd('post_type','deal');
 endif;
 ?>
 <!DOCTYPE html>
