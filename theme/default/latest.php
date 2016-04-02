@@ -88,6 +88,7 @@
 					<div class="clearfix"></div>
 				</div>
 			</div>
+            <?php if($redis->get('promod')!=1) : ?>
 			<div class="home-side-box side-pro-list">
 				<h4 class="title mt-0 mb-10">
 					会员专购
@@ -112,6 +113,7 @@
 					<?php endforeach; ?>
 				</ul>
 			</div>
+            <?php endif; ?>
             <?php echo maoo_ad('post2'); ?>
 		</div>
 	</div>
