@@ -34,6 +34,12 @@
 				<h4 class="title">独立支付宝即时到账接口设置</h4>
 				<div class="form-group">
 					<label>
+						支付宝账号
+					</label>
+					<input type="text" name="page[alipay_seller]" class="form-control" value="<?php echo $redis->hget('payset','alipay_seller'); ?>" placeholder="">
+				</div>
+				<div class="form-group">
+					<label>
 						合作身份者id <small>partner</small>
 					</label>
 					<input type="text" name="page[alipay_partner]" class="form-control" value="<?php echo $redis->hget('payset','alipay_partner'); ?>" placeholder="">
