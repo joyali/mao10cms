@@ -96,4 +96,13 @@
 	</div>
 	<?php endif; endforeach; ?>
 </div>
+<?php if($_GET['m']=='index' || $_GET['m']=='') : ?>
+<div class="link-box" style="padding-top:20px; padding-bottom:20px">
+    <div class="container">
+        <div class="link-box-in">
+            <?php echo maoo_link(); ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
 <?php include('footer.php'); ?>
