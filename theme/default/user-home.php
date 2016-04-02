@@ -5,18 +5,7 @@
 		<div class="col-lg-8 col-lg-offset-2 col">
 			<?php include_once('user-nav-1.php'); ?>
 			<div class="post-list">
-				<?php 
-				$count = $redis->scard('user_post_id:'.$user_id);
-				$page_now = $_GET['page'];
-				$page_size = $redis->get('page_size');
-				if(empty($page_now) || $page_now<1) :
-					$page_now = 1;
-				else :
-					$page_now = $_GET['page'];
-				endif;
-				$offset = ($page_now-1)*$page_size;
-				$db = $redis->sort('user_post_id:'.$user_id,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-				foreach($db as $page_id) : ?>
+				<?php foreach($db as $page_id) : ?>
 				<div class="post-<?php echo $id; ?> post mb-20">
 					<a class="pull-left img-div" href="<?php echo $redis->get('site_url'); ?>?m=post&a=single&id=<?php echo $page_id; ?>">
 						<img src="<?php echo maoo_fmimg($page_id); ?>">

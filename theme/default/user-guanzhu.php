@@ -4,19 +4,6 @@
 	<div class="row">
 		<div class="col-lg-8 col-lg-offset-2 col">
             <?php include_once('user-nav-1.php'); ?>
-			
-					<?php 
-						$count = $redis->zcard('user_guanzhu:'.$user_id);
-						$page_now = $_GET['page'];
-						$page_size = $redis->get('page_size');
-						if(empty($page_now) || $page_now<1) :
-							$page_now = 1;
-						else :
-							$page_now = $_GET['page'];
-						endif;
-						$offset = ($page_now-1)*$page_size;
-						$db = $redis->zrevrange('user_guanzhu:'.$user_id,$offset,$offset+$page_size-1);
-					?>
 					<ul class="media-list guanzhu-list">
 						<?php foreach($db as $rank_user_id) : ?>
 						<li class="media">

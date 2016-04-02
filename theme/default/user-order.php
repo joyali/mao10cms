@@ -32,24 +32,9 @@
 					</div>
 					<div class="panel-body">
 						<?php
-						if($_GET['type']==2 || $_GET['type']==3 || $_GET['type']==4 || $_GET['type']==5) :
-							$dbkey = 'cart:user:'.$_GET['type'].':'.maoo_user_id();
-						else :
-							$dbkey = 'cart:user:'.maoo_user_id();
-						endif;
-                        $count = $redis->scard($dbkey);
-                        $page_now = $_GET['page'];
-                        $page_size = $redis->get('page_size');
-                        if(empty($page_now) || $page_now<1) :
-                            $page_now = 1;
-                        else :
-                            $page_now = $_GET['page'];
-                        endif;
-                        $offset = ($page_now-1)*$page_size;
-                        $carts = $redis->sort($dbkey,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-						if($carts) : ?>
+						if($db) : ?>
 						<ul class="media-list">
-							<?php foreach($carts as $cart) :
+							<?php foreach($db as $cart) :
 							$pro_id = $redis->hget('cart:'.$cart,'pro_id');
 							$cover_images = unserialize($redis->hget('pro:'.$pro_id,'cover_image'));
 							$cart_status = $redis->hget('cart:'.$cart,'status'); ?>

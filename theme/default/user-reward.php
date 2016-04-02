@@ -6,17 +6,6 @@
             <div class="col-lg-8 col-lg-offset-2 col">
                 <?php include_once('user-nav-2.php'); ?>
                 <div class="panel panel-default">
-                    <?php 
-                        $page_size = $redis->get('page_size');
-                        if(empty($page_now) || $page_now<1) :
-                            $page_now = 1;
-                        else :
-                            $page_now = $_GET['page'];
-                        endif;
-                        $offset = ($page_now-1)*$page_size;
-                        $count = $redis->scard('user:reward:'.$user_id);
-                        $db = $redis->sort('user:reward:'.$user_id,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-                    ?>
                     <ul class="list-group deal-reward-list">
                         <?php foreach($db as $page_id) : $deal_id = $redis->hget('deal:reward:'.$page_id,'deal'); $rewards = unserialize($redis->hget('deal:'.$deal_id,'reward')); ?>
                         <li class="list-group-item">

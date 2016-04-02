@@ -6,7 +6,7 @@
             <?php include_once('user-nav-1.php'); ?>
 			
 					<div class="post-list">
-						<?php foreach($redis->smembers('user_like:'.$user_id) as $page_id) : ?>
+						<?php foreach($db as $page_id) : ?>
 						<div class="post-<?php echo $id; ?> post mb-20">
 							<a class="pull-left" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
 								<img class="mb-10" src="<?php echo maoo_fmimg($page_id); ?>">

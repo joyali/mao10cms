@@ -6,18 +6,6 @@
             <div class="col-lg-8 col-lg-offset-2 col">
                 <?php include_once('user-nav-2.php'); ?>
                 <div class="row deal-page">
-                    <?php 
-                        $page_now = $_GET['page'];
-                        $page_size = $redis->get('page_size');
-                        if(empty($page_now) || $page_now<1) :
-                            $page_now = 1;
-                        else :
-                            $page_now = $_GET['page'];
-                        endif;
-                        $offset = ($page_now-1)*$page_size;
-                        $count = $redis->scard('user_deal_id:'.$user_id);
-                        $db = $redis->sort('user_deal_id:'.$user_id,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-                    ?>
                     <?php foreach($db as $page_id) : $status = maoo_deal_status($page_id); ?>
                     <div class="col-sm-6 col">
                         <a class="thumbnail pr deal-index-list" href="<?php echo maoo_url('deal','single',array('id'=>$page_id)); ?>">

@@ -63,7 +63,7 @@
 				<div class="panel-heading text-center">
 					账单明细
 				</div>
-				<?php $db = $redis->sort('cash:user_id:'.$user_id,array('sort'=>'desc','limit'=>array(0,10))); if($db) : ?>
+				<?php if($db) : ?>
 					<ul class="list-group">
 						<?php foreach($db as $cash_id) : ?>
 						<li class="list-group-item">

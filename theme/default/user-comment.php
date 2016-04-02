@@ -5,18 +5,6 @@
 		<div class="col-lg-8 col-lg-offset-2 col">
 			<?php include_once('user-nav-1.php'); ?>
 			<ul class="media-list comment-list mb-20">
-				<?php
-					$count = $redis->scard('user_comment_id:'.$user_id);
-					$page_now = $_GET['page'];
-					$page_size = $redis->get('page_size');
-					if(empty($page_now) || $page_now<1) :
-						$page_now = 1;
-					else :
-						$page_now = $_GET['page'];
-					endif;
-					$offset = ($page_now-1)*$page_size;
-					$db = $redis->sort('user_comment_id:'.$user_id,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-				?>
 				<?php foreach($db as $comment) : $comment_type = $redis->hget('comment:'.$comment,'type'); ?>
 				<li class="media" id="comment-<?php echo $comment; ?>">
 								<div class="media-left">
