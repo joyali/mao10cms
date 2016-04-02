@@ -17,18 +17,6 @@
 				<?php endforeach; ?>
 			</ul>
 			<div class="row shop-allpro-list">
-			<?php
-						$count = $redis->zcard('term_pro_id:'.$id);
-						$page_now = $_GET['page'];
-						$page_size = $redis->get('page_size');
-						if(empty($page_now) || $page_now<1) :
-							$page_now = 1;
-						else :
-							$page_now = $_GET['page'];
-						endif;
-						$offset = ($page_now-1)*$page_size;
-						$db = $redis->zrevrange('term_pro_id:'.$id,$offset,$offset+$page_size-1);
-					?>
 			<?php foreach($db as $page_id) : $cover_images = unserialize($redis->hget('pro:'.$page_id,'cover_image')); ?>
 			<div class="col-xs-3 col">
 				<div class="thumbnail">

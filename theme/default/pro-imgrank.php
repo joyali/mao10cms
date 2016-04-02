@@ -16,22 +16,10 @@
 				买家晒单
 			</li>
 		</ol>
-		<?php 
-		$count = $redis->scard('pro:imgrank');
-		$page_now = $_GET['page'];
-		$page_size = $redis->get('page_size');
-		if(empty($page_now) || $page_now<1) :
-			$page_now = 1;
-		else :
-			$page_now = $_GET['page'];
-		endif;
-		$offset = ($page_now-1)*$page_size;
-		$rank_to_pros = $redis->sort('pro:imgrank',array('sort'=>'desc','limit'=>array($offset,$page_size)));
-		if($rank_to_pros) :
-		?>
+		<?php if($db) : ?>
 		<div class="grid row">
 			<?php 
-			foreach($rank_to_pros as $rank_to_pro) : 
+			foreach($db as $rank_to_pro) : 
 			$rank_pro_id = $redis->hget('cart:rank:'.$rank_to_pro,'pro_id');
 			$rank_user_id = $redis->hget('cart:rank:'.$rank_to_pro,'user_id');
 			$rank_images = unserialize($redis->hget('cart:rank:'.$rank_to_pro,'images'));
