@@ -31,18 +31,6 @@
 					</ul>
 				</div>
 				<ul class="list-group">
-					<?php 
-						$count = $redis->zcard('date_bbs_id');
-						$page_now = $_GET['page'];
-						$page_size = $redis->get('page_size');
-						if(empty($page_now) || $page_now<1) :
-							$page_now = 1;
-						else :
-							$page_now = $_GET['page'];
-						endif;
-						$offset = ($page_now-1)*$page_size;
-						$db = $redis->zrevrange('date_bbs_id',$offset,$offset+$page_size-1);
-					?>
 					<?php foreach($db as $page_id) : $author = $redis->hget('bbs:'.$page_id,'author'); ?>
 					<li class="list-group-item">
 						<div class="media">

@@ -6,6 +6,16 @@ class Maoo {
 			$maoo_title_page = ' - 第'.$_GET['page'].'页';
 		endif;
 		$maoo_title = '社区'.$maoo_title_page.' - '.$redis->get('site_name');
+        $count = $redis->zcard('date_bbs_id');
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+            $page_now = 1;
+        else :
+            $page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $db = $redis->zrevrange('date_bbs_id',$offset,$offset+$page_size-1);
 		include ROOT_PATH.'/theme/'.maoo_theme().'/bbs-index.php';
 	}
 	public function publish(){
@@ -63,6 +73,16 @@ class Maoo {
 			$maoo_title_page = ' - 第'.$_GET['page'].'页';
 		endif;
 		$maoo_title = maoo_term_title($id,'bbs').$maoo_title_page.' - '.$redis->get('site_name');
+        $count = $redis->zcard('date_term_bbs_id:'.$id);
+        $page_now = $_GET['page'];
+        $page_size = $redis->get('page_size');
+        if(empty($page_now) || $page_now<1) :
+            $page_now = 1;
+        else :
+            $page_now = $_GET['page'];
+        endif;
+        $offset = ($page_now-1)*$page_size;
+        $db = $redis->zrevrange('date_term_bbs_id:'.$id,$offset,$offset+$page_size-1);
 		include ROOT_PATH.'/theme/'.maoo_theme().'/bbs-term.php';
 	}
 }
