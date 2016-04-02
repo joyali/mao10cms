@@ -374,36 +374,38 @@ class Mao10Mysql {
 	public function hget($key,$hash_key) {
 		$result = mysql_query("SELECT content FROM ".$this->prefix."hash WHERE name='".maoo_magic_in($key)."'",$this->mysql);
 		while ($row = mysql_fetch_row($result)) {
-			$hash_val = maoo_unserialize( maoo_magic_out($row[0]) );
+			$hash_val = maoo_unserialize( $row[0]) );
 		};
-        return $hash_val[$hash_key];
+        return maoo_magic_out($hash_val[$hash_key]);
 	}
 
 	public function hgetall($key) {
 		$result = mysql_query("SELECT content FROM ".$this->prefix."hash WHERE name='".maoo_magic_in($key)."'",$this->mysql);
 		while ($row = mysql_fetch_row($result)) {
-			$hash_val = maoo_unserialize( maoo_magic_out($row[0]) );
+			$hash_val = maoo_unserialize( $row[0] );
 		}
-        return $hash_val;
+        return maoo_magic_out($hash_val);
 	}
 
 	public function hset($key,$hash_key,$hash_val) {
+        $hash_key = maoo_magic_in($hash_key);
+        $hash_val = maoo_magic_in($hash_val);
 		$result = mysql_query("SELECT name,content FROM ".$this->prefix."hash WHERE name='".maoo_magic_in($key)."'",$this->mysql);
 		while ($row = mysql_fetch_row($result)) {
 			$old_key = $row[0];
-			$old_val = maoo_unserialize( maoo_magic_out($row[1]) );
+			$old_val = maoo_unserialize( $row[1] );
 			$old_val[$hash_key] = $hash_val;
 		}
 		if($old_key!=$key) :
 			$val_array[$hash_key] = $hash_val;
-			$sql = "INSERT INTO ".$this->prefix."hash (name,content) VALUES ('".maoo_magic_in($key)."','".maoo_magic_in(maoo_serialize($val_array))."')";
+			$sql = "INSERT INTO ".$this->prefix."hash (name,content) VALUES ('".maoo_magic_in($key)."','".maoo_serialize($val_array)."')";
 			if (mysql_query($sql,$this->mysql)) {
 				return true;
 			} else {
 			    return false;
 			}
 		else :
-			$sql = "UPDATE ".$this->prefix."hash SET content='".maoo_magic_in(maoo_serialize($old_val))."' WHERE name='".maoo_magic_in($key)."'";
+			$sql = "UPDATE ".$this->prefix."hash SET content='".maoo_serialize($old_val)."' WHERE name='".maoo_magic_in($key)."'";
 			if (mysql_query($sql,$this->mysql)) {
 				return true;
 			} else {
@@ -413,13 +415,19 @@ class Mao10Mysql {
 	}
 
 	public function hmset($key,$val_array) {
+        foreach($val_array as $hash_key=>$hash_val) :
+            $hash_key = maoo_magic_in($hash_key);
+            $hash_val = maoo_magic_in($hash_val);
+            $new_val_array[$hash_key] = $hash_val;
+        endforeach;
+        $val_array = $new_val_array;
 		$result = mysql_query("SELECT name,content FROM ".$this->prefix."hash WHERE name='".maoo_magic_in($key)."'",$this->mysql);
 		while ($row = mysql_fetch_row($result)) {
 			$old_key = $row[0];
-			$old_val = maoo_unserialize(maoo_magic_out($row[1]));
-		}
+			$old_val = maoo_unserialize($row[1]);
+		};
 		if($old_key!=$key) :
-			$sql = "INSERT INTO ".$this->prefix."hash (name,content) VALUES ('".maoo_magic_in($key)."','".maoo_magic_in(maoo_serialize($val_array))."')";
+			$sql = "INSERT INTO ".$this->prefix."hash (name,content) VALUES ('".maoo_magic_in($key)."','".maoo_serialize($val_array)."')";
 			if (mysql_query($sql,$this->mysql)) {
 				return true;
 			} else {
@@ -429,7 +437,7 @@ class Mao10Mysql {
 			foreach($val_array as $hash_key=>$hash_val) :
 				$old_val[$hash_key] = $hash_val;
 			endforeach;
-			$sql = "UPDATE ".$this->prefix."hash SET content='".maoo_magic_in(maoo_serialize($old_val))."' WHERE name='".maoo_magic_in($key)."'";
+			$sql = "UPDATE ".$this->prefix."hash SET content='".maoo_serialize($old_val)."' WHERE name='".maoo_magic_in($key)."'";
 			if (mysql_query($sql,$this->mysql)) {
 				return true;
 			} else {
