@@ -202,6 +202,7 @@
 					<p>RewriteRule post-([0-9]{1,}).html$ index.php?m=post&a=single&id=$1&%{QUERY_STRING} [L]</p>
 					<p>RewriteRule pro-([0-9]{1,}).html$ index.php?m=pro&a=single&id=$1&%{QUERY_STRING} [L]</p>
 					<p>RewriteRule bbs-([0-9]{1,}).html$ index.php?m=bbs&a=single&id=$1&%{QUERY_STRING} [L]</p>
+					<p>RewriteRule deal-([0-9]{1,}).html$ index.php?m=deal&a=single&id=$1&%{QUERY_STRING} [L]</p>
 					<p>RewriteRule user-([0-9]{1,}).html$ index.php?m=user&a=index&id=$1&%{QUERY_STRING} [L]</p>
 					<p>RewriteRule topic-([0-9]{1,}).html$ index.php?m=post&a=topic&id=$1&%{QUERY_STRING} [L]</p>
 					<p>RewriteRule ([a-zA-Z]{1,})-term-([0-9]{1,}).html$ index.php?m=$1&a=term&id=$2&%{QUERY_STRING} [L]</p>
