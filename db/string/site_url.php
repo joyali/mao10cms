@@ -1,1 +1,0 @@
-<?php die("forbidden"); ?>http://127.0.0.1/nera

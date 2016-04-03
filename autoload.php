@@ -7,13 +7,12 @@ session_id(SID);
 session_start();
 header("Content-Type: text/html; charset=UTF-8");
 
-define('DB_TYPE','mysql'); //这里设置你的数据库类型，可选 mysql  redis  mdb
+define('DB_TYPE','mdb');
 //数据库连接
 if(DB_TYPE=='redis') :
 	try {
 		$redis = new Redis();
 		$redis->connect("127.0.0.1", 6379);
-        $redis->auth('redis数据库密码');
 		$redis->select(0);
 	}
 	catch(Exception $e) {
@@ -29,7 +28,7 @@ elseif(DB_TYPE=='mysql') :
 	require __DIR__.'/mysql.php';
 	try {
 		$redis = new Mao10Mysql;
-		$redis->connect('数据库地址','用户名','密码','数据库名');  //在这里修改mysql数据库配置信息
+		$redis->connect('127.0.0.1','root','','nera');
 		$redis->setprefix('maoo_');
         $redis->flush();
 	}
@@ -40,6 +39,11 @@ elseif(DB_TYPE=='mdb') :
     require __DIR__.'/mdb.php';
 	try {
 		$redis = new Mao10Mdb;
+        if($redis->get('site_url')=='') :
+            $site_url = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
+            $site_url = preg_replace("/\/[a-z0-9]+\.php.*/is", "", $site_url);
+            $redis->set('site_ur',$site_url);
+        endif;
 	}
 	catch(Exception $e) {
 		echo 'Message: ' .$e->getMessage();
