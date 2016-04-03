@@ -1,6 +1,16 @@
 <?php
 require __DIR__.'/../autoload.php';
 
+//判断程序是否安装
+function maoo_is_install() {
+    global $redis;
+    if($redis->get('site_url') && $redis->scard('post_type')>2 && $redis->get('page_size')>0 && $redis->get('fmimg')) :
+        return true;
+    else :
+        return false;
+    endif;
+};
+
 //项目剩余时间
 function maoo_deal_remain_day($id) {
     global $redis;

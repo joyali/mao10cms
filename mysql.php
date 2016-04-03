@@ -334,7 +334,6 @@ class Mao10Mysql {
 					return false;
 				}
 			endif;
-
 		else :
 			$sql = "INSERT INTO ".$this->prefix."zset (name,score,content) VALUES ('".maoo_magic_in($key)."','".maoo_magic_in($score)."','".maoo_magic_in($val)."')";
 			if (mysql_query($sql,$this->mysql)) {
@@ -374,7 +373,7 @@ class Mao10Mysql {
 	public function hget($key,$hash_key) {
 		$result = mysql_query("SELECT content FROM ".$this->prefix."hash WHERE name='".maoo_magic_in($key)."'",$this->mysql);
 		while ($row = mysql_fetch_row($result)) {
-			$hash_val = maoo_unserialize( $row[0]) );
+			$hash_val = maoo_unserialize( $row[0] );
 		};
         return maoo_magic_out($hash_val[$hash_key]);
 	}

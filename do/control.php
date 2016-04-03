@@ -8,7 +8,9 @@ if($redis->hget('user:'.maoo_user_id(),'user_level')==10) :
 	$redis->set('promod',$_POST['promod']);
 	$redis->set('bbsmod',$_POST['bbsmod']);
 	$redis->set('dealmod',$_POST['dealmod']);
-	$redis->set('page_size',$_POST['page_size']);
+    if($_POST['page_size']>0) :
+	   $redis->set('page_size',$_POST['page_size']);
+    endif;
 	$redis->set('topic_permission',$_POST['topic_permission']);
 	$redis->set('topic_number',$_POST['topic_number']);
 	$redis->set('site:signbg1',$_POST['signbg1']);
