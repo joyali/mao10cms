@@ -39,6 +39,9 @@
 							<option value="g">
 								晒单
 							</option>
+							<option value="h">
+								众筹
+							</option>
 							<?php $db = $redis->lrange('new_post_id:page',0,99); ?>
 							<?php foreach($db as $page_id) : ?>
 							<option value="<?php echo $page_id; ?>">

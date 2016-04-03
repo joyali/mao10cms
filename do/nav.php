@@ -27,6 +27,9 @@ if($redis->hget('user:'.maoo_user_id(),'user_level')==10) :
 		elseif($_POST['page']=='g') :
 			$data['link'] = maoo_url('pro','imgrank');
 			$data['text'] = '晒单';
+		elseif($_POST['page']=='h') :
+			$data['link'] = maoo_url('deal','index');
+			$data['text'] = '众筹';
 		endif;
 		if($data) :
 			if($_POST['number']>0) :
