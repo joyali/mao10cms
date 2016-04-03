@@ -93,7 +93,7 @@
 				</div>
 				<div class="form-group">
 					<label>
-						商品模块
+						众筹模块
 					</label>
 					<select class="form-control" name="dealmod">
 						<option value="1" <?php if($redis->get('dealmod')==1) echo 'selected'; ?>>关闭</option>
