@@ -275,7 +275,7 @@ function maoo_theme() {
 function maoo_url($m='index',$a='index',$array=false) {
 	global $redis;
 	if($redis->get('rewrite')==2 && $m!='admin') :
-		if($m=='post' || $m=='pro' || $m=='bbs') :
+		if($m=='post' || $m=='pro' || $m=='bbs' || $m=='deal') :
 			if($a=='single' || $a=='topic' || $a=='term') :
 				if($array) :
 					foreach($array as $key=>$val) :
