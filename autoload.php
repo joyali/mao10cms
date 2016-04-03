@@ -42,7 +42,7 @@ elseif(DB_TYPE=='mdb') :
         if($redis->get('site_url')=='') :
             $site_url = "http://".$_SERVER["HTTP_HOST"].$_SERVER['PHP_SELF'];
             $site_url = preg_replace("/\/[a-z0-9]+\.php.*/is", "", $site_url);
-            $redis->set('site_ur',$site_url);
+            $redis->set('site_url',$site_url);
         endif;
 	}
 	catch(Exception $e) {
