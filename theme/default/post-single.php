@@ -1,11 +1,7 @@
 <?php include('header.php'); ?>
-<style>
-	body {padding-bottom: 60px;}
-	footer {display: none; }
-</style>
 <div class="container">
 	<div class="row single-post">
-		<div class="col-sm-10 col-sm-offset-1 col">
+		<div class="col-md-9 col">
 			<div class="panel panel-default panel-single-post">
 				<div class="panel-heading">
 					<h1 class="title mt-0 mb-20"><?php echo $redis->hget('post:'.$id,'title'); ?></h1>
@@ -132,37 +128,6 @@
 					<?php endif; ?>
 				</div>
 			</div>
-            <div class="panel panel-default single-recommend-post">
-                <div class="panel-heading">
-                    <i class="glyphicon glyphicon-bookmark"></i> 推荐阅读
-                </div>
-                <div class="panel-body">
-                    <div class="row">
-                        <?php 
-                            if($redis->scard('topic_post_id:'.$redis->hget('post:'.$id,'topic'))>0) :
-                            $topic_post_db1 = $redis->sort('topic_post_id:'.$redis->hget('post:'.$id,'topic'),array('sort'=>'desc','limit' =>array(0,3)));
-                            $topic_post_db2 = $redis->sort('post_id',array('sort'=>'desc','limit' =>array(0,10)));
-                            $topic_post_db = array_merge($topic_post_db1,$topic_post_db2);
-                            $topic_post_db3 = array_unique($topic_post_db);
-                            $topic_post_db3 = array_slice($topic_post_db3,0,3);
-                            foreach($topic_post_db3 as $page_id) :
-                        ?>
-                        <div class="col-md-4 col">
-                            <div class="thumbnail">
-                                <a class="img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
-                                    <img src="<?php echo maoo_fmimg($page_id); ?>">
-                                </a>
-                                <div class="caption">
-                                    <a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
-                                        <?php echo $redis->hget('post:'.$page_id,'title'); ?>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        <?php endforeach; endif; ?>
-                    </div>
-                </div>
-            </div>
             <?php echo maoo_ad('post5'); ?>
 			<div id="react-post-comment-box"></div>
 				<script type="text/jsx" src="<?php echo $redis->get('site_url'); ?>/theme/default/react/comment.js"></script>
@@ -173,46 +138,97 @@
 				);
 				</script>
 		</div>
-	</div>
-</div>
-<div class="post-footer">
-	<div class="container-fluid">
-		<div class="row">
-			<div class="col-md-6 col left">
-				<a class="avatar" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">
+        <div class="col-md-3 col">
+            <div class="home-side-box side-author">
+                <a class="avatar" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">
 					<img src="<?php echo maoo_user_avatar($author); ?>" alt="<?php echo maoo_user_display_name($author); ?>">
 				</a>
-				<a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><?php echo maoo_user_display_name($author); ?></a>
-				<span class="ml-5 mr-5">发表于</span>
-				<?php echo date('Y/m/d',$redis->hget('post:'.$id,'date')); ?>
-			</div>
-			<div class="col-sm-6 col right text-right hidden-xs hidden-sm">
-				<ul class="list-inline mb-0">
-					<li>
-						<?php echo maoo_like_btn($id); ?>
-					</li>
-					<li>
-						<a class="goto" href="#react-post-comment-box">
-							<i class="glyphicon glyphicon-comment"></i> <?php echo $redis->scard('post_comment_id:'.$id); ?>
-						</a>
-					</li>
-					<li>
-						<span id="share" class="pr">
-							<i class="glyphicon glyphicon-share"></i> 分享
-							<div id="share-box">
-								<div class="bdsharebuttonbox">
-									<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
-									<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
-									<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
-									<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
-								</div>
-								<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"<?php echo $redis->hget('post:'.$id,'title'); ?>","bdMini":"2","bdMiniList":false,"bdPic":"<?php echo $redis->hget('post:'.$id,'fmimg'); ?>","bdStyle":"1","bdSize":"32"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+                <div class="clearfix mb-10"></div>
+				<a class="name wto" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><?php echo maoo_user_display_name($author); ?></a>
+                <div class="clearfix mb-20"></div>
+                <ul class="list-inline mb-10">
+                    <li><a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">文章 <?php echo $redis->scard('user_post_id:'.$author); ?></a></li>
+                    <li><a href="<?php echo maoo_url('user','topic',array('id'=>$author)); ?>">话题 <?php echo $redis->scard('user_topic_id:'.$author); ?></a></li>
+                    <li><a href="<?php echo maoo_url('user','comment',array('id'=>$author)); ?>">评论 <?php echo $redis->scard('user_comment_id:'.$author); ?></a></li>
+                </ul>
+                <div id="share-box">
+                    <div class="bdsharebuttonbox">
+                        <a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+                        <a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+                        <a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+                        <a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+                        <a href="#" class="bds_douban" data-cmd="douban" title="分享到豆瓣网"></a>
+                        <a href="#" class="bds_meilishuo" data-cmd="meilishuo" title="分享到美丽说"></a>
+                    </div>
+                    <script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"<?php echo $redis->hget('post:'.$id,'title'); ?>","bdMini":"2","bdMiniList":false,"bdPic":"<?php echo $redis->hget('post:'.$id,'fmimg'); ?>","bdStyle":"1","bdSize":"16"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+                </div>
+            </div>
+            <div class="home-side-box side-latest-post">
+				<h4 class="title mt-0 mb-10">
+					最新文章
+					<a class="pull-right" href="<?php echo maoo_url('post','latest'); ?>">更多</a>
+				</h4>
+				<ul class="media-list">
+					<?php $db = $redis->sort('post_id',array('sort'=>'desc','limit'=>array(0,5))); ?>
+					<?php foreach($db as $page_id) : ?>
+					<li class="media">
+						<div class="media-left">
+							<a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
+								<img class="media-object" src="<?php echo maoo_fmimg($page_id); ?>" alt="<?php echo $redis->hget('post:'.$page_id,'title'); ?>">
+							</a>
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading">
+								<a href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>"><?php echo $redis->hget('post:'.$page_id,'title'); ?></a>
+							</h4>
+							<div class="excerpt">
+								<?php echo maoo_cut_str(strip_tags($redis->hget('post:'.$page_id,'content')),21); ?>
 							</div>
-						</span>
+						</div>
 					</li>
+					<?php endforeach; ?>
 				</ul>
 			</div>
-		</div>
+			<div class="home-side-box side-topic-list">
+				<h4 class="title mt-0 mb-20">
+					热门话题
+					<a class="pull-right" href="<?php echo maoo_url('post','topic'); ?>">更多</a>
+				</h4>
+				<div class="side-topic-box">
+					<?php $db = $redis->sort('topic_id',array('sort'=>'desc','limit' =>array(0,10))); ?>
+					<?php foreach($db as $topic_id) : ?>
+					<a class="side-topic" href="<?php echo maoo_url('post','topic',array('id'=>$topic_id)); ?>"><?php echo $redis->hget('topic:'.$topic_id,'title'); ?></a>
+					<?php endforeach; ?>
+					<div class="clearfix"></div>
+				</div>
+			</div>
+            <?php if($redis->get('promod')!=1) : ?>
+			<div class="home-side-box side-pro-list">
+				<h4 class="title mt-0 mb-10">
+					会员专购
+					<a class="pull-right" href="<?php echo maoo_url('pro'); ?>">更多</a>
+				</h4>
+				<?php
+					$db = $redis->zrevrange('pro_id',0,4);
+				?>
+				<ul class="media-list">
+					<?php foreach($db as $page_id) : $cover_images = unserialize($redis->hget('pro:'.$page_id,'cover_image')); ?>
+					<li class="media">
+						<a class="media-left img-div" href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>">
+							<img class="media-object" src="<?php echo $cover_images[1]; ?>">
+						</a>
+						<div class="media-body">
+							<h4 class="media-heading">
+								<a href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>"><?php echo $redis->hget('pro:'.$page_id,'title'); ?></a>
+							</h4>
+							<div class="price"><?php echo maoo_pro_min_price($page_id); ?>元</div>
+						</div>
+					</li>
+					<?php endforeach; ?>
+				</ul>
+			</div>
+            <?php endif; ?>
+        </div>
 	</div>
 </div>
 <?php
