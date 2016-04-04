@@ -47,7 +47,7 @@
                         ['color', ['color']],
                         ['para', ['ul', 'ol', 'paragraph']],
                         ['table', ['table']],
-                        ['insert', ['link', 'picture']],
+                        ['insert', ['link', 'picture'<?php if($redis->hget('user:'.maoo_user_id(),'user_level')>7) : ?>,'video'<?php endif; ?>]],
                         ['view', ['codeview']]
                     ],
 					lang: 'zh-CN',
