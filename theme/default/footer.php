@@ -56,6 +56,20 @@
 </div>
 <?php endif; ?>
 <?php include('cart.php'); ?>
+<div class="mobile-foot-nav visible-xs-block visible-sm-block">
+    <a class="mobile-foot-nav-item <?php if($_GET['m']=='' && $_GET['a']=='') echo 'active'; ?>" href="<?php echo $redis->get('site_url'); ?>">
+        <i class="fa fa-home"></i>
+    </a>
+    <a class="mobile-foot-nav-item <?php if($_GET['m']=='post' && $_GET['a']=='topic') echo 'active'; ?>" href="<?php echo maoo_url('post','topic'); ?>">
+        <i class="fa fa-archive"></i>
+    </a>
+    <a class="mobile-foot-nav-item <?php if($_GET['m']=='user' && $_GET['a']=='like') echo 'active'; ?>" href="<?php echo maoo_url('user','like'); ?>">
+        <i class="fa fa-star"></i>
+    </a>
+    <a class="mobile-foot-nav-item <?php if($_GET['m']=='user' && $_GET['a']=='set') echo 'active'; ?>" href="<?php echo maoo_url('user','set'); ?>">
+        <i class="fa fa-gears"></i>
+    </a>
+</div>
 <!--[if lte IE 8]>
 <div class="browser-msg text-center">
 	<p class="txt">
