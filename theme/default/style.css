@@ -430,6 +430,7 @@ footer a {margin: 0 4px;}
 .post-footer .list-inline li a i {top: 2px; margin-right: 4px;}
 
 .side-author {background-color: #fff; text-align: center; padding: 35px 0 25px; }
+.side-author .avatar { width: 108px; height: 108px; border-radius: 50%; display: block; overflow: hidden; margin: 0 auto; }
 .side-author a.name {color: #2f2f2f; font-size: 16px; }
 .side-author a.name:hover {color: #ff4800; }
 .side-author .list-inline a {color: #a1a1a1; }
