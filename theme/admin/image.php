@@ -28,7 +28,16 @@
                         <div class="input-group">
                             <input name="img" class="form-control" type="text" value="<?php echo $img; ?>">
                             <a href="#" class="input-group-addon">
-                                删除
+                                本地删除
+                            </a>
+                        </div>
+                    </form>
+                    <?php elseif( strstr($img,$redis->get('upyun_url')) ) : ?>
+                    <form method="post" action="<?php echo $redis->get('site_url'); ?>/do/upyun-delete.php">
+                        <div class="input-group">
+                            <input name="img" class="form-control" type="text" value="<?php echo $img; ?>">
+                            <a href="#" class="input-group-addon">
+                                又拍删除
                             </a>
                         </div>
                     </form>
@@ -37,7 +46,7 @@
                         <div class="input-group">
                             <input name="img" class="form-control" type="text" value="<?php echo $img; ?>">
                             <a href="#" class="input-group-addon">
-                                删除
+                                七牛删除
                             </a>
                         </div>
                     </form>
