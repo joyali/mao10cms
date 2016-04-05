@@ -32,6 +32,15 @@
                             </a>
                         </div>
                     </form>
+                    <?php elseif( strstr($img,$redis->get('qiniu_url')) ) : ?>
+                    <form method="post" action="<?php echo $redis->get('site_url'); ?>/do/qiniu-delete.php">
+                        <div class="input-group">
+                            <input name="img" class="form-control" type="text" value="<?php echo $img; ?>">
+                            <a href="#" class="input-group-addon">
+                                删除
+                            </a>
+                        </div>
+                    </form>
                     <?php else : ?>
                     <div class="input-group">
                             <input name="img" class="form-control" type="text" value="<?php echo $img; ?>">
