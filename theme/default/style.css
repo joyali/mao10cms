@@ -365,7 +365,7 @@ footer a {margin: 0 4px;}
 .post-list .post h2.title a {color: #2f2f2f; font-weight: bold; }
 .post-list .post h2.title a:hover {color: #ff4a00; }
 .post-list .post a.pull-left {width: 220px; height: 142px; margin-right: 20px; }
-.post-list .post .post-right {font-size: 13px; padding: 10px 20px; }
+.post-list .post .post-right {font-size: 13px; padding: 10px 20px 10px 260px; }
 .post-list .post .post-right .author,.post-list .post .post-right ul.list-inline { color: #b3b3b3; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; }
 .post-list .post .post-right .author {line-height: 30px; }
 .post-list .post .post-right .author a,
