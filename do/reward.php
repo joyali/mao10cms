@@ -74,6 +74,9 @@ if(maoo_user_id()) :
                         $coinsobj->date = strtotime("now");
                         $redis->lpush('coins:user:'.$user_id,serialize($coinsobj));
                     endif;
+                    //站内信通知项目发起人
+                    $text = '<h4 class="title"><a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a> 支持了您的众筹项目 <a href="'.maoo_url('deal','single',array('id'=>$pid)).'">'.$redis->hget('deal:'.$pid,'title').'</a> ：</h4><div>'.$total.'元</div>';
+                    maoo_add_message($user_id,$redis->hget('deal:'.$id,'author'),$text);
                     $url = $redis->get('site_url').'?m=user&a=reward&done=支持项目成功';
                 else :
                     $url = $redis->get('site_url').'?m=user&a=cash&done=账户余额不足，请先充值';
