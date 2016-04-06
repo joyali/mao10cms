@@ -10,7 +10,8 @@ if(maoo_user_id()) :
   $out_trade_no = $curDateTime . $randNum;
 
   $ext = explode('.',$_FILES['file']['name']);
-  $attached_type = $ext[1];
+  $count = count($ext);
+  $attached_type = $ext[$count-1];
 
   $fileName = ROOT_PATH.'/upload/image/'.$ymd.'/'.$out_trade_no.'.'.$attached_type; // 获取需要创建的文件名称
   $fileName_true = '/upload/image/'.$ymd.'/'.$out_trade_no.'.'.$attached_type;
