@@ -190,6 +190,31 @@ if($_GET['id']>0 && $_GET['type']) :
 			else :
 			$url = $redis->get('site_url').'?done=你没有进行此项操作的权限';
 			endif;
+        elseif($_GET['type']=='deal') :
+            if($redis->hget('user:'.$user_id,'user_level')==10) :
+            $redis->srem('deal_id',$id);
+            $author = $redis->hget('deal:'.$id,'author');
+            $redis->srem('user_deal_id:'.$author,$id);
+            $term = $redis->hget('deal:'.$id,'term');
+            $redis->srem('term_deal_id:'.$term,$id);
+            //进展
+            foreach($redis->smembers('deal:updatelist:'.$id) as $page_id) :
+                $redis->del('deal:update:'.$page_id);
+            endforeach;
+            $redis->del('deal:updatelist:'.$id);
+            //支持
+            foreach($redis->smembers('deal:rewardlist:'.$id) as $page_id) :
+                $author = $redis->hget('deal:reward:'.$page_id,'user_id');
+                $redis->srem('user:reward:'.$author,$page_id);
+                $redis->del('deal:reward:'.$page_id);
+            endforeach;
+            $redis->del('deal:rewardlist:'.$id);
+            //项目
+            $redis->del('deal:'.$id);
+            $url = $redis->get('site_url').'?m=deal&a=index&done=删除成功';
+            else :
+			$url = $redis->get('site_url').'?done=你没有进行此项操作的权限';
+			endif;
 		else :
 			$url = $redis->get('site_url').'?done=参数错误';
 		endif;
