@@ -6,7 +6,7 @@ class Maoo {
 			$maoo_title_page = ' - 第'.$_GET['page'].'页';
 		endif;
 		if($_GET['s']) :
-			$s = $_GET['s'];
+			$s = maoo_remove_html($_GET['s'],'all');
 			if($_GET['type']==2) :
 				if(!$redis->exists('search:topic:'.$s)) :
 					foreach($redis->zrevrange('topic_rank_list',0,1199) as $s_page_id) :
