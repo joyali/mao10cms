@@ -536,21 +536,18 @@ function maoo_remove_html($text, $type = 'html') {
 	    //兼容Form格式
 	    $form_tags = $base_tags . '<form><input><textarea><button><select><optgroup><option><label><fieldset><legend>';
 	    //内容等允许HTML的格式
-	    $html_tags = $base_tags . '<ul><ol><li><dl><dd><dt><table><caption><td><th><tr><thead><tbody><tfoot><col><colgroup><div><span><object><embed><param>';
+	    $html_tags = $base_tags . '<ul><ol><li><dl><dd><dt><table><caption><td><th><tr><thead><tbody><tfoot><col><colgroup><span><object><embed><param>';
 	    //专题等全HTML格式
-	    $all_tags = $form_tags . $html_tags . '<!DOCTYPE><meta><html><head><title><body><base><basefont><script><noscript><applet><object><param><style><frame><frameset><noframes><iframe>';
+	    $all_tags = $form_tags . $html_tags . '<!DOCTYPE><meta><html><head><title><body><base><basefont><script><noscript><applet><object><param><style><frame><frameset><noframes><iframe><div>';
 	    //过滤标签
 	    $text = real_strip_tags($text, ${$type . '_tags'});
 	    // 过滤攻击代码
-	    if ($type != 'all') {
-	        // 过滤危险的属性，如：过滤on事件lang js
-	        while (preg_match('/(<[^><]+)(ondblclick|onclick|onload|onerror|unload|onmouseover|onmouseup|onmouseout|onmousedown|onkeydown|onkeypress|onkeyup|onblur|onchange|onfocus|action|background|codebase|dynsrc|lowsrc)([^><]*)/i', $text, $mat)) {
-	            $text = str_ireplace($mat[0], $mat[1] . $mat[3], $text);
-	        }
-	        while (preg_match('/(<[^><]+)(window\.|javascript:|js:|about:|file:|document\.|vbs:|cookie)([^><]*)/i', $text, $mat)) {
-	            $text = str_ireplace($mat[0], $mat[1] . $mat[3], $text);
-	        }
-	    }
+	    while (preg_match('/(<[^><]+)(ondblclick|onclick|onload|onerror|unload|onmouseover|onmouseup|onmouseout|onmousedown|onkeydown|onkeypress|onkeyup|onblur|onchange|onfocus|action|background|codebase|dynsrc|lowsrc)([^><]*)/i', $text, $mat)) {
+            $text = str_ireplace($mat[0], $mat[1] . $mat[3], $text);
+        }
+        while (preg_match('/(<[^><]+)(window\.|javascript:|js:|about:|file:|document\.|vbs:|cookie)([^><]*)/i', $text, $mat)) {
+            $text = str_ireplace($mat[0], $mat[1] . $mat[3], $text);
+        }
     }
     return $text;
 }
