@@ -83,7 +83,7 @@ class Maoo {
 		if($_GET['id']>0) {
 			$user_id = $_GET['id'];
 			if($redis->hget('user:'.$user_id,'del')!=1) {
-				$redis->hget('user:'.$user_id,'title').'喜欢的文章 - '.$redis->get('site_name');
+				$maoo_title = $redis->hget('user:'.$user_id,'title').'喜欢的文章 - '.$redis->get('site_name');
                 $count = $redis->scard('user_like:'.$user_id);
 					$page_now = $_GET['page'];
 					$page_size = $redis->get('page_size');
@@ -124,7 +124,7 @@ class Maoo {
 		if($_GET['id']>0) {
 			$user_id = $_GET['id'];
 			if($redis->hget('user:'.$user_id,'del')!=1) {
-				$redis->hget('user:'.$user_id,'title').'关注的用户 - '.$redis->get('site_name');
+				$maoo_title = $redis->hget('user:'.$user_id,'title').'关注的用户 - '.$redis->get('site_name');
                 $count = $redis->zcard('user_guanzhu:'.$user_id);
 						$page_now = $_GET['page'];
 						$page_size = $redis->get('page_size');
@@ -165,7 +165,7 @@ class Maoo {
 		if($_GET['id']>0) {
 			$user_id = $_GET['id'];
 			if($redis->hget('user:'.$user_id,'del')!=1) {
-				$redis->hget('user:'.$user_id,'title').'发起的话题 - '.$redis->get('site_name');
+				$maoo_title = $redis->hget('user:'.$user_id,'title').'发起的话题 - '.$redis->get('site_name');
 				include ROOT_PATH.'/theme/'.maoo_theme().'/user-topic.php';
 			} else {
 				$error = '该用户已被删除';
