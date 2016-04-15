@@ -44,7 +44,7 @@
 											<?php endif; ?>
 											<?php
 												$count = $redis->zcard('topic_rank_list');
-												$db_rank = $redis->zrevrange('topic_rank_list',0,9);
+												$db_rank = $redis->zrevrange('topic_rank_list',0,99);
 												if($db_rank) :
 													$db = $db_rank;
 												else :
@@ -52,7 +52,23 @@
 												endif;
 											?>
 											<?php foreach($db as $s_topic_id) : ?>
+                                            <?php
+                                            $topic_pubcan = 0;
+                                            if($redis->hget('topic:'.$s_topic_id,'permission')==2) :
+							if($redis->sismember('topic_partner:'.$s_topic_id,$user_id) || $redis->hget('topic:'.$s_topic_id,'author')==$user_id) :
+								$topic_pubcan = 1;
+							endif;
+						elseif($redis->hget('topic:'.$s_topic_id,'permission')==4) :
+							if($redis->hget('topic:'.$s_topic_id,'author')==$user_id) :
+								$topic_pubcan = 1;
+							endif;
+						else :
+							$topic_pubcan = 1;
+						endif;
+                                            if($topic_pubcan == 1) :
+                                            ?>
 											<option value="<?php echo $s_topic_id; ?>"><?php echo $redis->hget('topic:'.$s_topic_id,'title'); ?> #<?php echo $s_topic_id; ?></option>
+                                            <?php endif; ?>
 											<?php endforeach; ?>
 										</select>
 										<?php endif; ?>
