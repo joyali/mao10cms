@@ -1,4 +1,5 @@
 <?php
+header('Access-Control-Allow-Origin: *');
 require 'functions.php';
 if(maoo_user_id()>0) :
 	$user_id = maoo_user_id();
