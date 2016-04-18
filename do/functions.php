@@ -409,18 +409,35 @@ function maoo_cut_str($sourcestr,$cutlength) {
 //获取当前登录的用户id
 function maoo_user_id() {
 	global $redis;
-	$user_name = $_SESSION['user_name'];
-	if($user_name) {
-		$id = $redis->zscore('user_id_name',$user_name);
-		$user_pass = $redis->hget('user:'.$id,'user_pass');
-		if($_SESSION['user_pass']==$user_pass) {
-			return $id;
-		} else {
-			return false;
-		};
-	} else {
-		return false;
-	};
+    if($_GET['uid']>0 && $_GET['token']) :
+        $id = $_GET['uid'];
+        $now = strtotime("now");
+        if($redis->hget('user:'.$id,'token_deadline')<($now-86400*3)) :
+            $redis->hset('user:'.$id,'token',maoo_rand(20));
+            $redis->hset('user:'.$id,'token_deadline',$now);
+            return false;
+        else :
+            if($_GET['token']==$redis->hget('user:'.$id,'token')) :
+                $redis->hset('user:'.$id,'token_deadline',$now);
+                return $id;
+            else :
+                return false;
+            endif;
+        endif;
+    else :
+        $user_name = $_SESSION['user_name'];
+        if($user_name) {
+            $id = $redis->zscore('user_id_name',$user_name);
+            $user_pass = $redis->hget('user:'.$id,'user_pass');
+            if($_SESSION['user_pass']==$user_pass) {
+                return $id;
+            } else {
+                return false;
+            };
+        } else {
+            return false;
+        };
+    endif;
 };
 //分页功能
 function maoo_pagenavi($count,$page_now,$size=false) {
