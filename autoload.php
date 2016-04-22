@@ -7,7 +7,7 @@ session_id(SID);
 session_start();
 header("Content-Type: text/html; charset=UTF-8");
 
-define('DB_TYPE','mdb');
+define('DB_TYPE','mysql');
 //数据库连接
 if(DB_TYPE=='redis') :
 	try {
