@@ -35,7 +35,7 @@
 				<i class="fa fa-shopping-cart"></i>
 			</button>
 			<a class="navbar-brand" href="<?php echo $redis->get('site_url'); ?>">
-				<?php echo $redis->get('site_name'); ?>
+				<img src="<?php echo $redis->get('site_url'); ?>/theme/default/img/logo-sm.png" alt="<?php echo $redis->get('site_name'); ?>" />
 			</a>
 		</div>
 	</div>
@@ -58,7 +58,7 @@
 		<div class="row">
 			<div class="col-md-8 col">
                 <a class="logo pull-left hidden-xs" href="<?php echo $redis->get('site_url'); ?>">
-				    <?php echo $redis->get('site_name'); ?>
+				    <img src="<?php echo $redis->get('site_url'); ?>/theme/default/img/logo-sm.png" alt="<?php echo $redis->get('site_name'); ?>" />
 				</a>
 				<div id="nav">
 					<?php echo maoo_nav(); ?>

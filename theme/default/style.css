@@ -148,7 +148,7 @@ th {font-weight: normal;}
 #header { border-radius: 0; line-height: 60px; width: 100%; height: 62px; color: #2f2f2f; position: fixed; top: 0px; left: 0; width: 100%; right: 0; border-top: 1px solid #e5e5e5; border-bottom: 1px solid #e5e5e5; z-index: 999; }
 #header .bg {position: absolute; display: block; left: 0; right: 0; top: 0; bottom: 0; width: 100%; height: 60px; background-color: #fff; z-index: -1; }
 
-#header .logo {display: block; overflow: hidden; height: 60px; margin-right: 25px; background-image: url(img/logo-sm.png); background-position: left center; background-repeat: no-repeat; padding-left: 56px; font-size: 18px; font-weight: bold; }
+#header .logo {display: block; overflow: hidden; height: 60px; margin-right: 25px; }
 #header a {color: #2f2f2f;  }
 #header .description {font-size: 25px;  }
 #header .text-right > ul > li { font-size: 14px; margin-left: 4px; padding: 0; }

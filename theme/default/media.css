@@ -33,7 +33,7 @@
     #header #header-tools .user .dropdown-menu li a:hover {color: #ff4a00; background: none; }
     #nav-show-bg {position: fixed; width: 100%; left: 0; top: 0; bottom: 0; right: 0; z-index: 99998; display: none;}
     #mobile-nav {background-color: #fff; }
-    #mobile-nav a.navbar-brand {color: #2f2f2f; background-image: url(img/logo-xs.png); background-position: 15px 10px; background-repeat: no-repeat; padding-left: 55px; }
+    #mobile-nav a.navbar-brand {color: #2f2f2f; padding: 5px 15px; }
     
     /* footer */
     footer {padding: 20px 10px; font-size: 12px; margin-top: 20px; }
