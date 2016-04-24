@@ -15,7 +15,7 @@
 				</div>
 				<div class="form-group">
 					<input type="text" name="qq_appkey" class="form-control" value="<?php echo $redis->get('user:connect:qq:appkey'); ?>" placeholder="APP KEY">
-					<p class="help-block">设置以上两项参数后，QQ登录功能会自动开启，申请此接口地址：<a target="_blank" href="http://connect.qq.com/">http://connect.qq.com/</a></p>
+					<p class="help-block">设置以上两项参数后，QQ登录功能会自动开启，申请此接口地址：<a target="_blank" href="http://connect.qq.com/">http://connect.qq.com/</a>。回调地址请填写：<?php echo $redis->get('site_url'); ?>/public/connect-qq</p>
 				</div>
 				<div class="form-group">
 					<label>
@@ -25,7 +25,7 @@
 				</div>
 				<div class="form-group">
 					<input type="text" name="weibo_appsecret" class="form-control" value="<?php echo $redis->get('user:connect:weibo:appsecret'); ?>" placeholder="APP SECRET">
-					<p class="help-block">设置以上两项参数后，新浪微博登录功能会自动开启，申请此接口地址：<a target="_blank" href="http://open.weibo.com/">http://open.weibo.com/</a></p>
+					<p class="help-block">设置以上两项参数后，新浪微博登录功能会自动开启，申请此接口地址：<a target="_blank" href="http://open.weibo.com/">http://open.weibo.com/</a>。回调地址请填写：<?php echo $redis->get('site_url'); ?>/public/connect-weibo</p>
 				</div>
 				<div class="form-group">
 					<label>
