@@ -1047,9 +1047,9 @@ function maoo_user_display_name($id) {
 	global $redis;
 	if($id>0) {
 		if($redis->hget('user:'.$id,'display_name')=='') {
-			return $redis->hget('user:'.$id,'user_name');
+			return $redis->hget('user:'.$id,'user_name').'#'.$id;
 		} else {
-			return $redis->hget('user:'.$id,'display_name');
+			return $redis->hget('user:'.$id,'display_name').'#'.$id;
 		}
 	} else {
 		return '匿名';
