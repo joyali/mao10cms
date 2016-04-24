@@ -181,7 +181,7 @@ function maoo_link() {
 	if($db) :
         $nav .= '<h4 class="title">友情链接：</h4>';
 		foreach($db as $page_id) : $number = $redis->zscore('link:list',$page_id);
-			$nav .= '<a class="link-item" href="'.$redis->hget('link:'.$page_id,'link').'">'.$redis->hget('link:'.$page_id,'text').'</a>';
+			$nav .= '<a class="link-item" target="_blank" href="'.$redis->hget('link:'.$page_id,'link').'">'.$redis->hget('link:'.$page_id,'text').'</a>';
 		endforeach;
 	endif;
 	return $nav;
