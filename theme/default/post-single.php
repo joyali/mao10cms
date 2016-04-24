@@ -24,7 +24,9 @@
 						</ul>
 					</div>
 					<div class="bg"></div>
-					<div class="bgimg blur" style="background-image:url(<?php echo $redis->hget('post:'.$id,'fmimg'); ?>);"></div>
+					<div class="bgimg blur" style="background-image:url(<?php echo $redis->hget('post:'.$id,'fmimg'); ?>);">
+                        <img src="<?php echo $redis->hget('post:'.$id,'fmimg'); ?>" />
+                    </div>
 				</div>
 				<div class="panel-body">
                     <?php echo maoo_ad('post4'); ?>
