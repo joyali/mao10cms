@@ -16,10 +16,10 @@ if($verify_result) {//验证成功
 
     //获取支付宝的通知返回参数，可参考技术文档中服务器异步通知参数列表
 
-	//商户订单号
+	//商户订单号
 	$out_trade_no = $_POST['out_trade_no'];
 
-	//支付宝交易号
+	//支付宝交易号
 	$trade_no = $_POST['trade_no'];
 
 	//交易状态
@@ -29,6 +29,14 @@ if($verify_result) {//验证成功
 
 
     if($_POST['trade_status'] == 'TRADE_FINISHED') {
+        $cashs = $redis->smembers('cash:user_id:'.$user_id);
+		foreach($cashs as $cash_id) :
+			$out_trade_no_true = $redis->hget('cash:'.$cash_id,'out_trade_no');
+			if($out_trade_no_true==$out_trade_no) :
+				$redis->hset('cash:'.$cash_id,'status',2);
+				$redis->hset('user:'.$user_id,'cash',maoo_user_cash($user_id)+$total_fee);
+			endif;
+		endforeach;
 		//判断该笔订单是否在商户网站中已经做过处理
 			//如果没有做过处理，根据订单号（out_trade_no）在商户网站的订单系统中查到该笔订单的详细，并执行商户的业务程序
 			//如果有做过处理，不执行商户的业务程序
