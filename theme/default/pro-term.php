@@ -18,7 +18,7 @@
 			</ul>
 			<div class="row shop-allpro-list">
 			<?php foreach($db as $page_id) : $cover_images = unserialize($redis->hget('pro:'.$page_id,'cover_image')); ?>
-			<div class="col-xs-3 col">
+			<div class="col-xs-6 col-md-3 col">
 				<div class="thumbnail">
 								<a class="img-div" href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>"><img src="<?php echo $cover_images[1]; ?>" alt="<?php echo $redis->hget('pro:'.$page_id,'title'); ?>"></a>
 								<div class="caption">
