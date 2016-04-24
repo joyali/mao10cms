@@ -24,11 +24,12 @@
 						endif;
 						if($pubcan==1) :
 					?>
-					<a class="btn btn-primary pull-right hidden-xs hidden-sm" href="<?php echo maoo_url('post','publishtopic'); ?>">发起话题</a>
+					<a class="btn btn-primary btn-xs pull-right" href="<?php echo maoo_url('post','publishtopic'); ?>">发起话题</a>
 					<?php endif; ?>
 					<div class="clearfix"></div>
 				</div>
 				<?php endif; ?>
+                <div class="clearfix"></div>
 				<?php foreach($redis->smembers('user_topic_id:'.$user_id) as $topic_id) : ?>
 				<div class="topic-<?php echo $topic_id; ?> topic col-md-6 col">
 					<div class="topic-pr pr mb-20">
