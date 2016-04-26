@@ -17,12 +17,13 @@ class Maoo {
 				endif;
 				$type = 'topic';
 			elseif($_GET['type']==3) :
-				$users = $redis->keys('user_display_name:*'.$s.'*');
 				if(!$redis->exists('search:user:'.$s)) :
-					foreach($users as $s_key) :
-						$s_page_id = $redis->get($s_key);
-						$redis->sadd('search:user:'.$s,$s_page_id);
-					endforeach;
+                    foreach ($redis->zrange('user_id_display_name',0,-1) as $name) :
+                        if(strstr($name,$s)) :
+                            $name_id = $redis->zscore('user_id_display_name',$name);
+                            $redis->sadd('search:user:'.$s,$name_id);
+                        endif;
+                    endforeach;
 				endif;
 				$type = 'user';
 			else :
