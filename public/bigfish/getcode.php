@@ -6,7 +6,7 @@ if(maoo_user_id()) :
 	$_SESSION['dayu_code'] = maoo_rand(6);
 	$SmsParam = '{"code":"'.$_SESSION['dayu_code'].'","product":"来自 '.$redis->get('site_name').' 的"}';
 	$SmsTemplateCode = 'SMS_2200347';
-	if(($redis->hget('user:'.maoo_user_id,'sendtimes')-strtotime("now"))<0) :
+	if(($redis->hget('user:'.maoo_user_id(),'sendtimes')-strtotime("now"))<0) :
 		if(maoo_dayu_send_message($RecNum,$SmsFreeSignName,$SmsParam,$SmsTemplateCode)) :
 			$redis->hset('user:'.maoo_user_id,'sendtimes',strtotime("now")+60);
 			echo '验证码发送成功';
