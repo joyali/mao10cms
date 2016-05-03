@@ -12,7 +12,7 @@ if($_GET['uid']>0 && $_GET['token']) :
             $redis->hset('user:'.$id,'token_deadline',$now);
             //json
             $json->code = 200;
-            $json->nickname = $redis->hget('user:'.$id,'display_name');
+            $json->nickname = maoo_user_display_name($id);
             $json->cash = maoo_user_cash($id);
             $json->coins = maoo_user_coins($id);
             $json->des = '用户信息获取成功';
