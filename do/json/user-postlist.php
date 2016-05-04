@@ -37,5 +37,6 @@ foreach($db as $page_id) :
 endforeach;
 $json->count = $count;
 $json->posts = $posts;
+$json->userName = maoo_user_display_name($user_id);
 echo json_encode($json);
 ?>
