@@ -14,8 +14,6 @@
 <link href="<?php echo $redis->get('site_url'); ?>/theme/default/style.css" rel="stylesheet">
 <link href="<?php echo $redis->get('site_url'); ?>/theme/default/media.css" rel="stylesheet">
 <script src="<?php echo $redis->get('site_url'); ?>/public/js/jquery.min.js"></script>
-<script src="<?php echo $redis->get('site_url'); ?>/public/js/react.min.js"></script>
-<script src="<?php echo $redis->get('site_url'); ?>/public/js/JSXTransformer.js"></script>
 <script src="<?php echo $redis->get('site_url'); ?>/public/js/bootstrap.min.js"></script>
 <!--[if lt IE 9]>
 	<script src="<?php echo $redis->get('site_url'); ?>/public/js/html5shiv.min.js"></script>

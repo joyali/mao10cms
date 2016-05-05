@@ -1,4 +1,6 @@
 <?php include('header.php'); ?>
+<script src="<?php echo $redis->get('site_url'); ?>/public/js/react.min.js"></script>
+<script src="<?php echo $redis->get('site_url'); ?>/public/js/JSXTransformer.js"></script>
 <div class="container mb-40 checkout">
 	<?php
 	$carts = $redis->smembers('cart:user:1:'.maoo_user_id());
