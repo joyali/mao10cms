@@ -11,6 +11,7 @@ if(maoo_user_id()>0) :
 	endforeach;
     endif;
 	$_POST['page']['title'] = maoo_remove_html($_POST['page']['title'],'all');
+	$_POST['page']['tags'] = maoo_remove_html($_POST['page']['tags'],'all');
 	if($redis->hget('user:'.maoo_user_id(),'user_level')>7) :
         $_POST['page']['content'] = maoo_str_replace_base64($_POST['page']['content']);
 	       $_POST['page']['content2'] = maoo_str_replace_base64($_POST['page']['content2']);

@@ -430,7 +430,11 @@ function maoo_user_id() {
             $id = $redis->zscore('user_id_name',$user_name);
             $user_pass = $redis->hget('user:'.$id,'user_pass');
             if($_SESSION['user_pass']==$user_pass) {
-                return $id;
+                if(maoo_user_ip()==$redis->hget('user:'.$id,'user_last_ip')) :
+                    return $id;
+                else :
+                    return false;
+                endif;
             } else {
                 return false;
             };
