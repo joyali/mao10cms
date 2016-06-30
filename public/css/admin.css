@@ -197,7 +197,8 @@ footer a {margin: 0 4px; }
 .container.admin > .row {margin-left: 0; margin-right: 0; background-color: #fff; position: relative; background-color: #9796a4;}
 .container.admin > .row > .col {padding-left: 0; padding-right: 0; }
 .user-center-side { height: 100%; }
-.user-center-side .list-group a {border: 0; border-radius: 0; background-color: transparent; color: #fff; padding: 10px 25px; font-weight: bold; }
+.user-center-side .list-group {border-bottom: 1px solid #e5e5e5; margin-bottom: 0; padding: 10px 0;}
+.user-center-side .list-group a {border: 0; border-radius: 0; background-color: transparent; color: #fff; padding: 5px 25px; }
 .user-center-side .list-group a:hover {background-color: #f67769; }
 .container.admin > .row > .col.admin-body {padding: 30px; background-color: #fff; min-height: 1250px; }
 .container.admin > .row > .col.admin-body h4.title {margin-top: 0; border-bottom: 1px solid #e5e5e5; padding-bottom: 8px;  margin-bottom: 15px; }

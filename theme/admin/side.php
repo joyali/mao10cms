@@ -15,17 +15,33 @@
 				</a>
 			</div>
 			<div class="list-group">
-				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=publishpro" class="list-group-item publishpro">
-					发布商品
+				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=postlist" class="list-group-item postlist">
+					全部文章
 				</a>
-				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=consult" class="list-group-item consult">
-					商品咨询
+				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=deletedposts" class="list-group-item deletedposts">
+					已删文章
+				</a>
+			</div>
+			<div class="list-group">
+				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=prolist" class="list-group-item prolist">
+					全部商品
 				</a>
 				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=order" class="list-group-item order">
 					订单管理
 				</a>
+				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=deletedpros" class="list-group-item deletedpros">
+					已删商品
+				</a>
 			</div>
 			<div class="list-group">
+				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=bbslist" class="list-group-item bbslist">
+					全部帖子
+				</a>
+			</div>
+			<div class="list-group">
+				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=deallist" class="list-group-item deallist">
+					全部项目
+				</a>
 				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=deal" class="list-group-item deal">
 					待审项目
 				</a>
@@ -49,13 +65,5 @@
 			<div class="list-group">
 				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=page" class="list-group-item page">
 					全部页面
-				</a>
-			</div>
-			<div class="list-group">
-				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=deletedposts" class="list-group-item deletedposts">
-					已删文章
-				</a>
-				<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=deletedpros" class="list-group-item deletedpros">
-					已删商品
 				</a>
 			</div>

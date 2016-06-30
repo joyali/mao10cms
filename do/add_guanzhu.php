@@ -13,8 +13,8 @@ if(is_numeric($_GET['id']) && $guanzhu_user_id) :
 			$guanzhu_count = maoo_guanzhu_count($id);
 			$redis->hset('user:'.$id,'guanzhu_count',$guanzhu_count+1);
 			//信息
-			$text = '<h4 class="title"><a href="'.maoo_url('user','index',array('id'=>$guanzhu_user_id)).'">'.maoo_user_display_name($guanzhu_user_id).'</a> 关注了你</h4>';
-			maoo_add_message($guanzhu_user_id,$id,$text);
+			$text = '我刚刚关注了<a href="'.maoo_url('user','index',array('id'=>$id)).'">'.maoo_user_display_name($id).'</a>';
+			maoo_add_message($guanzhu_user_id,$text);
 		endif;
 	endif;
 endif;

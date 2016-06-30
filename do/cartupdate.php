@@ -5,8 +5,8 @@ if($redis->hget('user:'.maoo_user_id(),'user_level')==10) :
 	$redis->hset('cart:'.$cart,'update',$_POST['content']);
 	$user_id = $redis->hget('cart:'.$cart,'user_id');
 	$pro_id = $redis->hget('cart:'.$cart,'pro_id');
-    $text = '<h4 class="title">你购买的商品 <a href="'.maoo_url('user','order').'">'.$redis->hget('pro:'.$pro_id,'title').'</a> 有了新的动态：</h4>'.$_POST['content'];
-    maoo_add_message(maoo_user_id(),$user_id,$text);
+    $text = '我购买的商品：《<a href="'.maoo_url('user','order').'">'.$redis->hget('pro:'.$pro_id,'title').'</a>》有了新的动态：'.$_POST['content'];
+    maoo_add_message($user_id,$text,true);
 	$url = $redis->get('site_url').'?m=admin&a=order&done=设置成功';
 else :
 	$url = $redis->get('site_url').'?done=请迅速撤离危险区域';

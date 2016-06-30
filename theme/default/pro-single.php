@@ -83,14 +83,6 @@
 						<div class="entry mt-20">
 							<?php echo $redis->hget('pro:'.$id,'content'); ?>
 						</div>
-						<?php if($redis->hget('user:'.maoo_user_id(),'user_level')==10 || $redis->hget('user:'.maoo_user_id(),'user_level')==8) : ?>
-						<hr>
-						<div class="text-center">
-							<?php //echo maoo_collection_btn($id,'pro',''); ?>
-							<a href="<?php echo maoo_url('admin','editpro',array('id'=>$id)); ?>" class="btn btn-primary">编辑</a> 
-							<a href="<?php echo $redis->get('site_url'); ?>/do/delete.php?id=<?php echo $id; ?>&type=pro" class="btn btn-default">删除</a>
-						</div>
-						<?php endif; ?>
 					</div>
 				</div>
 				<div class="rank-to-pro-list">
@@ -152,6 +144,7 @@
 										<?php if($redis->hget('user:'.maoo_user_id(),'user_level')>7) : ?>
 										<div class="mt-10">
 											<a href="#" class="btn btn-default btn-sm btn-rankreply" data-id="<?php echo $rank_to_pro; ?>" data-toggle="modal" data-target="#rankreplyModal"><?php if($redis->hget('cart:rank:'.$rank_to_pro,'reply')) : ?>重新<?php endif; ?>回复此评价</a>
+                                            <a href="<?php echo $redis->get('site_url'); ?>/do/delete.php?type=cartrank&id=<?php echo $rank_to_pro; ?>" class="btn btn-warning btn-sm">删除</a>
 										</div>
 										<?php endif; ?>
 									</div>
@@ -266,71 +259,4 @@
 	</div>
 </div>
 <div class="clearfix"></div>
-			<div class="modal fade" id="consultModal" tabindex="-1" role="dialog">
-				<div class="modal-dialog" role="document">
-					<div class="modal-content">
-						<div class="modal-header">
-							<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-								<span aria-hidden="true">
-									&times;
-								</span>
-							</button>
-							<h4 class="modal-title">
-								咨询商家
-							</h4>
-						</div>
-						<form method="post" action="<?php echo $redis->get('site_url'); ?>/do/consult.php">
-						<input type="hidden" name="page[pro_id]" value="<?php echo $id; ?>">
-						<div class="modal-body">
-							<?php
-								$db = $redis->sort('consult_id:'.$id.':'.maoo_user_id(),array('sort'=>'asc','limit'=>array(0,30)));
-								if($db) :
-							?>
-							<div id="consult">
-								<div id="consult-in">
-									<ul class="media-list consult-group">
-										<?php foreach($db as $page_id) : ?>
-										<li class="media">
-											<div class="<?php if($redis->hget('consult:'.$page_id,'type')==1) : echo 'media-left'; else : echo 'media-right'; endif; ?>">
-												<div class="img-div">
-													<img class="media-object" src="<?php echo maoo_user_avatar($redis->hget('consult:'.$page_id,'user_id')); ?>">
-												</div>
-											</div>
-											<div class="media-body">
-												<h4 class="media-heading">
-													<?php echo maoo_user_display_name($redis->hget('consult:'.$page_id,'user_id')); ?> ：
-												</h4>
-												<?php echo $redis->hget('consult:'.$page_id,'content'); ?>
-											</div>
-										</li>
-										<?php endforeach; ?>
-									</ul>
-								</div>
-							</div>
-							<?php endif; ?>
-							<div class="form-group">
-								<textarea class="form-control" rows="3" name="page[content]" placeholder="请输入需要咨询的问题"></textarea>
-							</div>
-						</div>
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">
-								取消
-							</button>
-							<button type="submit" class="btn btn-warning">
-								发送
-							</button>
-						</div>
-						</form>
-					</div>
-				</div>
-			</div>
-			<?php if($_GET['showconsult']==1) : ?>
-			<script>
-				$('#consultModal').modal({
-					show: true
-				});
-				$("#consult-in").scrollTop(99999);
-				$('#consultModal textarea').focus();
-			</script>
-			<?php endif; ?>
 <?php include('footer.php'); ?>

@@ -26,8 +26,8 @@
 							<?php echo maoo_cut_str(strip_tags($redis->hget('post:'.$page_id,'content')),70); ?>
 						</div>
 						<ul class="list-inline mb-0">
-							<?php if($redis->hget('post:'.$page_id,'topic')>0) : ?>
-							<li><i class="glyphicon glyphicon-paperclip"></i> <a href="<?php echo maoo_url('post','topic',array('id'=>$redis->hget('post:'.$page_id,'topic'))); ?>"><?php echo $redis->hget('topic:'.$redis->hget('post:'.$page_id,'topic'),'title'); ?></a></li>
+							<?php if($redis->hget('post:'.$page_id,'term')>0) : ?>
+							<li><i class="glyphicon glyphicon-paperclip"></i> <a href="<?php echo maoo_url('post','term',array('id'=>$redis->hget('post:'.$page_id,'term'))); ?>"><?php echo maoo_term_title($redis->hget('post:'.$page_id,'term')); ?></a></li>
 							<?php endif; ?>
 							<li><i class="glyphicon glyphicon-heart"></i> <?php echo maoo_like_count($page_id); ?></li>
 							<li><i class="glyphicon glyphicon-eye-open"></i> <?php echo maoo_get_views($page_id); ?></li>

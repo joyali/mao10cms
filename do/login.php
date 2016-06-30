@@ -34,6 +34,7 @@ if($_POST['user_name'] && $_POST['user_pass']) :
 			$_SESSION['user_name'] = $user_name;
 			$_SESSION['user_pass'] = $user_pass;
 			$user_level = $redis->hget('user:'.$id,'user_level');
+            $redis->zadd('user_rank_list',strtotime("now"),$id);
 			if($_POST['user_referer']) {
 				$url = $_POST['user_referer'];
 			} elseif($user_level==10) {

@@ -6,7 +6,7 @@
 				搜索“<?php echo $_GET['s']; ?>”
 			</h1>
 			<ul class="nav nav-pills nav-justified mb-40">
-				<li role="presentation" <?php if($_GET['type']!=2 && $_GET['type']!=3) echo 'class="active"'; ?>>
+				<li role="presentation" <?php if($_GET['type']!=2 && $_GET['type']!=3 && $_GET['type']!=4) echo 'class="active"'; ?>>
 					<a href="<?php echo $redis->get('site_url'); ?>?s=<?php echo $s; ?>&type=1">
 						文章
 					</a>
@@ -19,6 +19,11 @@
 				<li role="presentation" <?php if($_GET['type']==3) echo 'class="active"'; ?>>
 					<a href="<?php echo $redis->get('site_url'); ?>?s=<?php echo $s; ?>&type=3">
 						用户
+					</a>
+				</li>
+				<li role="presentation" <?php if($_GET['type']==4) echo 'class="active"'; ?>>
+					<a href="<?php echo $redis->get('site_url'); ?>?s=<?php echo $s; ?>&type=4">
+						商品
 					</a>
 				</li>
 			</ul>
@@ -58,6 +63,24 @@
 								<?php echo $redis->hget('user:'.$user_id,'description'); ?>
 							</div>
 						</li>
+						<?php endforeach; ?>
+					</ul>
+				</div>
+			<?php elseif($_GET['type']==4) : ?>
+				<div class="search-pro-list">
+					<ul class="media-list mb-0">
+						<?php foreach($db as $page_id) : $cover_images = unserialize($redis->hget('pro:'.$page_id,'cover_image')); ?>
+						<li class="media">
+                            <a class="media-left img-div" href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>">
+                                <img class="media-object" src="<?php echo $cover_images[1]; ?>">
+                            </a>
+                            <div class="media-body">
+                                <h4 class="media-heading">
+                                    <a href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>"><?php echo $redis->hget('pro:'.$page_id,'title'); ?></a>
+                                </h4>
+                                <div class="price"><?php echo maoo_pro_min_price($page_id); ?>元</div>
+                            </div>
+                        </li>
 						<?php endforeach; ?>
 					</ul>
 				</div>

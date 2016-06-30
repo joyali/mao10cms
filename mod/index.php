@@ -26,6 +26,15 @@ class Maoo {
                     endforeach;
 				endif;
 				$type = 'user';
+			elseif($_GET['type']==4) :
+				if(!$redis->exists('search:pro:'.$s)) :
+                    foreach ($redis->zrevrange('pro_id',0,-1) as $s_page_id) :
+                        if(strstr($redis->hget('pro:'.$s_page_id,'title'),$s) || strstr($redis->hget('pro:'.$s_page_id,'content'),$s)) :
+							$redis->sadd('search:pro:'.$s,$s_page_id);
+						endif;
+                    endforeach;
+				endif;
+				$type = 'pro';
 			else :
 				if(!$redis->exists('search:post:'.$s)) :
 					foreach($redis->zrevrange('rank_list',0,1199) as $s_page_id) :
@@ -49,6 +58,9 @@ class Maoo {
 			$db = $redis->sort('search:'.$type.':'.$s,array('sort'=>'desc','limit'=>array($offset,$page_size)));
 			$maoo_title = '搜索：'.$s.$maoo_title_page.' - '.$redis->get('site_name');
 			include ROOT_PATH.'/theme/'.maoo_theme().'/search.php';
+        elseif(maoo_user_id()) :
+            $url = maoo_url('user','index',array('id'=>maoo_user_id()));
+            echo '<!DOCTYPE html><html lang="zh-CN"><meta http-equiv="refresh" content="0;url='.$url.'"><head><meta charset="utf-8"><title>Mao10CMS</title></head><body></body></html>';
 		else :
 			if($redis->get('site_title')) :
 				$maoo_title = $redis->get('site_title');

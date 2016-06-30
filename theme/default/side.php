@@ -1,48 +1,10 @@
-<?php include('header.php'); ?>
-<div class="container" id="latest">
-    <?php echo maoo_ad('post1'); ?>
-    <div class="row post-list">
-		<div class="col-sm-9 col">
-		<h4 class="title mt-0 mb-10 hidden-xs hidden-sm">最新文章</h4>
-		<?php foreach($db as $page_id) : ?>
-		<div class="post-<?php echo $page_id; ?> post mb-20">
-					<a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
-						<img src="<?php echo maoo_fmimg($page_id); ?>">
-					</a>
-					<div class="post-right">
-						<h2 class="title">
-							<a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
-								<?php echo $redis->hget('post:'.$page_id,'title'); ?>
-							</a>
-						</h2>
-						<?php $author = $redis->hget('post:'.$page_id,'author'); ?>
-						<div class="author mb-10">
-							<a class="avatar" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><img src="<?php echo maoo_user_avatar($author); ?>" alt="<?php echo maoo_user_display_name($author); ?>"></a> <a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><?php echo maoo_user_display_name($author); ?></a><span class="dian">•</span><span><?php echo date('Y/m/d',$redis->hget('post:'.$page_id,'date')); ?></span>
-							<div class="clearfix"></div>
-						</div>
-						<div class="entry mb-10">
-							<?php echo maoo_cut_str(strip_tags($redis->hget('post:'.$page_id,'content')),33); ?>
-						</div>
-						<ul class="list-inline mb-0">
-							<?php if($redis->hget('post:'.$page_id,'term')>0) : ?>
-							<li><i class="glyphicon glyphicon-tag"></i> <a href="<?php echo maoo_url('post','term',array('id'=>$redis->hget('post:'.$page_id,'term'))); ?>"><?php echo maoo_term_title($redis->hget('post:'.$page_id,'term')); ?></a></li>
-							<?php endif; ?>
-							<li><i class="glyphicon glyphicon-heart"></i> <?php echo maoo_like_count($page_id); ?></li>
-							<li><i class="glyphicon glyphicon-eye-open"></i> <?php echo maoo_get_views($page_id); ?></li>
-						</ul>
-					</div>
-					<div class="clearfix"></div>
-				</div>
-		<?php endforeach; ?>
-		<?php echo maoo_pagenavi($count,$page_now); ?>
-		</div>
-		<div class="col-sm-3 col hidden-xs hidden-sm">
-			<div class="home-side-box side-latest-post">
+<div class="home-side-box side-latest-post">
 				<h4 class="title mt-0 mb-10">
-					热门文章
+					最新文章
+					<a class="pull-right" href="<?php echo maoo_url('post','latest'); ?>">更多</a>
 				</h4>
 				<ul class="media-list">
-					<?php $db = $redis->zrevrange('rank_list',0,4); ?>
+					<?php $db = $redis->sort('post_id',array('sort'=>'desc','limit'=>array(0,5))); ?>
 					<?php foreach($db as $page_id) : ?>
 					<li class="media">
 						<div class="media-left">
@@ -121,8 +83,3 @@
 				</ul>
 			</div>
             <?php endif; ?>
-            <?php echo maoo_ad('post2'); ?>
-		</div>
-	</div>
-</div>
-<?php include('footer.php'); ?>

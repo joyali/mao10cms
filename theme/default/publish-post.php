@@ -13,96 +13,14 @@
 							</div>
 							<div class="form-group">
 								<label>
-									话题
+									分类
 								</label>
-								<div class="row">
-									<?php
-										if($redis->hget('user:'.$user_id,'user_level')==10) :
-											$pubcan = 1;
-										else :
-											if($redis->get('topic_permission')!=2) :
-												if($redis->get('topic_number')>0) :
-													if($redis->scard('user_topic_id:'.$user_id)<$redis->get('topic_number')) :
-														$pubcan = 1;
-													endif;
-												else :
-													$pubcan = 1;
-												endif;
-											endif;
-										endif;
-										if($pubcan==1) :
-									?>
-									<div class="col-md-8 col">
-										<?php if($redis->hget('post:'.$id,'permission')==3) : ?>
-										<input type="text" class="form-control" value="<?php echo $redis->hget('topic:'.$topic_id,'title'); ?>" disabled>
-										<input id="pub-topic" type="hidden" name="page[topic]" value="<?php echo $topic_id; ?>">
-										<p class="help-block">私密话题中的文章不允许修改所属话题</p>
-										<?php else : ?>
-										<select id="pub-topic" class="form-control" name="page[topic]">
-											<?php if($topic_id) : ?>
-											<option value="<?php echo $topic_id; ?>"><?php echo $redis->hget('topic:'.$topic_id,'title'); ?> #<?php echo $s_topic_id; ?> [当前]</option>
-											<?php endif; ?>
-											<?php
-												$count = $redis->zcard('topic_rank_list');
-												$db_rank = $redis->zrevrange('topic_rank_list',0,99);
-												if($db_rank) :
-													$db = $db_rank;
-												else :
-													$db = $redis->sort('user_topic_id:'.$user_id,array('sort'=>'desc'));
-												endif;
-											?>
-											<?php foreach($db as $s_topic_id) : ?>
-                                            <?php
-                                            $topic_pubcan = 0;
-                                            if($redis->hget('topic:'.$s_topic_id,'permission')==2) :
-							if($redis->sismember('topic_partner:'.$s_topic_id,$user_id) || $redis->hget('topic:'.$s_topic_id,'author')==$user_id) :
-								$topic_pubcan = 1;
-							endif;
-						elseif($redis->hget('topic:'.$s_topic_id,'permission')==4) :
-							if($redis->hget('topic:'.$s_topic_id,'author')==$user_id) :
-								$topic_pubcan = 1;
-							endif;
-						else :
-							$topic_pubcan = 1;
-						endif;
-                                            if($topic_pubcan == 1) :
-                                            ?>
-											<option value="<?php echo $s_topic_id; ?>"><?php echo $redis->hget('topic:'.$s_topic_id,'title'); ?> #<?php echo $s_topic_id; ?></option>
-                                            <?php endif; ?>
-											<?php endforeach; ?>
-										</select>
-										<?php endif; ?>
-									</div>
-									<div class="col-md-4 col hidden-xs hidden-sm">
-										<a class="btn btn-default btn-block" href="<?php echo maoo_url('post','publishtopic'); ?>">新建话题</a>
-									</div>
-									<?php else : ?>
-									<div class="col-xs-12 col">
-										<?php if($redis->hget('post:'.$id,'permission')==3 || $redis->hget('topic:'.$topic_id,'author')==$user_id) : ?>
-										<input type="text" class="form-control" value="<?php echo $redis->hget('topic:'.$topic_id,'title'); ?>" disabled>
-										<input id="pub-topic" type="hidden" name="page[topic]" value="<?php echo $topic_id; ?>">
-										<?php else : ?>
-										<select id="pub-topic" class="form-control" name="page[topic]">
-											<?php if($topic_id) : ?>
-											<option value="<?php echo $topic_id; ?>"><?php echo $redis->hget('topic:'.$topic_id,'title'); ?></option>
-											<?php endif; ?>
-											<?php
-												$count = $redis->zcard('topic_rank_list');
-												$db_rank = $redis->zrevrange('topic_rank_list',0,9);
-												if($db_rank) :
-													$db = $db_rank;
-												else :
-													$db = $redis->sort('user_topic_id:'.$user_id,array('sort'=>'desc'));
-												endif;
-											?>
-											<?php foreach($db as $s_topic_id) : ?>
-											<option value="<?php echo $s_topic_id; ?>"><?php echo $redis->hget('topic:'.$s_topic_id,'title'); ?></option>
-											<?php endforeach; ?>
-										</select>
-										<?php endif; ?>
-									</div>
-									<?php endif; ?>
-								</div>
+								<div class="clearfix"></div>
+								<?php foreach($redis->zrange('term:post',0,-1) as $title) : ?>
+								<label class="radio-inline">
+									<input type="radio" name="page[term]" value="<?php echo $redis->zscore('term:post',$title); ?>" <?php if($redis->hget('post:'.$id,'term')==$redis->zscore('term:post',$title)) : ?>checked<?php endif; ?>> <?php echo $title; ?>
+								</label>
+								<?php endforeach; ?>
 							</div>
 							<div class="form-group">
 								<label>

@@ -17,8 +17,8 @@ if($_GET['id']>0 && $_GET['type']) :
 				//用户已删除文章列表
 				$redis->sadd('del_user_post_id:'.$author_id,$id);
 				//分类
-				$topic_id = $redis->hget('post:'.$id,'topic');
-				$redis->srem('topic_post_id:'.$topic_id,$id);
+				$topic_id = $redis->hget('post:'.$id,'term');
+				$redis->srem('term_post_id:'.$topic_id,$id);
 				//标签
 				$tags = explode(' ',$redis->hget('post:'.$id,'tags'));
 				foreach($tags as $tag) :
@@ -48,13 +48,6 @@ if($_GET['id']>0 && $_GET['type']) :
                 endforeach;
 				//RANK列表
 				$redis->zrem('rank_list',$id);
-				$author_rank1_now = $redis->hget('user:'.$author_id,'rank1');
-				$author_post_count = $redis->scard('user_post_id:'.$author_id)+$redis->scard('del_user_post_id:'.$author_id);
-				$rank_true_now = $redis->zscore('rank_list',$id);
-				$author_rank1_new = round(($author_rank1_now*$author_post_count-$rank_true_now)/$author_post_count,0);
-				$redis->hset('user:'.$author_id,'rank1',$author_rank1_new);
-				$redis->zrem('user_rank_list',$author_id);
-				$redis->zadd('user_rank_list',$author_rank1_new,$author_id);
 				//标记内容
 				$redis->hset('post:'.$id,'del',1);
 				$url = $redis->get('site_url').'?done=删除成功';
@@ -212,6 +205,26 @@ if($_GET['id']>0 && $_GET['type']) :
             //项目
             $redis->del('deal:'.$id);
             $url = $redis->get('site_url').'?m=deal&a=index&done=删除成功';
+            else :
+			$url = $redis->get('site_url').'?done=你没有进行此项操作的权限';
+			endif;
+        elseif($_GET['type']=='cartrank') :
+            if($redis->hget('user:'.$user_id,'user_level')==10) :
+            $pro_id = $redis->hget('cart:rank:'.$id,'pro_id');
+            $redis->srem('pro:imgrank',$id);
+            $redis->srem('pro:rank:'.$pro_id,$id);
+            $redis->del('cart:rank:'.$id);
+            $url = $redis->get('site_url').'?m=pro&a=index&done=删除成功';
+            else :
+			$url = $redis->get('site_url').'?done=你没有进行此项操作的权限';
+			endif;
+        elseif($_GET['type']=='activity') :
+            $author = $redis->hget('activity:'.$page_id,'date');
+            if($redis->hget('user:'.$user_id,'user_level')==10 || $author==$user_id) :
+            $redis->del('activity:'.$id);
+            $redis->srem('activity_id',$id);
+            $redis->srem('user_activity_id:'.$author,$id);
+            $url = $redis->get('site_url').'?m=user&a=index&id='.$author.'&done=删除成功';
             else :
 			$url = $redis->get('site_url').'?done=你没有进行此项操作的权限';
 			endif;

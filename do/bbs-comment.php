@@ -20,8 +20,10 @@ if(maoo_user_id()>0) :
                 endif;
                 if($idx) :
 				    $content_s2 .= '<a href="'.maoo_url('user','index',array('id'=>$idx)).'">'.$content_s.'</a> ';
-                    $text = '<h4 class="title"><a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a> 在文章 <a href="'.maoo_url('post','single',array('id'=>$pid)).'">'.$redis->hget('post:'.$pid,'title').'</a> 中@了你：</h4>'.$content;
-                    maoo_add_message($user_id,$idx,$text);
+                    $text = '我刚刚在帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》中@了<a href="'.maoo_url('user','index',array('id'=>$idx)).'">'.maoo_user_display_name($idx).'</a>：'.$content;
+                    maoo_add_message($user_id,$text);
+                    $text = '<a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a>刚刚在帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》中@了我：'.$content;
+                    maoo_add_message($idx,$text,true);
                 else :
                     $content_s2 .= $val.' ';
                 endif;
@@ -43,13 +45,17 @@ if(maoo_user_id()>0) :
 		if($_POST['parent']>0) :
 			$redis->sadd('comment_child_id:'.$comment['parent'],$id);
 			$author = $redis->hget('comment:'.$comment['parent'],'author');
-			$text = '<h4 class="title"><a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a> 在帖子 <a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a> 中回复了你：</h4>'.$comment['content'];
-			maoo_add_message($user_id,$author,$text);
+			$text = '我刚刚在帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》中回复了<a href="'.maoo_url('user','index',array('id'=>$author)).'">'.maoo_user_display_name($author).'</a>：'.$comment['content'];
+			maoo_add_message($user_id,$text);
+			$text = '<a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a>刚刚在帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》中回复了我：'.$comment['content'];
+			maoo_add_message($author,$text,true);
 		else :
 			$redis->sadd('bbs_comment_id:'.$pid,$id);
 			$author = $redis->hget('bbs:'.$pid,'author');
-			$text = '<h4 class="title"><a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a> 评论了你的帖子 <a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>：</h4>'.$comment['content'];
-			maoo_add_message($user_id,$author,$text);
+			$text = '我刚刚评论了帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》：'.$comment['content'];
+			maoo_add_message($user_id,$text);
+			$text = '<a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a>刚刚评论了我的帖子 <a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>：'.$comment['content'];
+			maoo_add_message($author,$text,true);
 		endif;
 		$redis->sadd('comment_id',$id);
 		$redis->sadd('user_comment_id:'.$user_id,$id);

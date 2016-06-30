@@ -10,7 +10,7 @@ if(maoo_user_id()) :
 	$user_id = maoo_user_id();
 	$redis->zadd('user:connect:qq',$user_id,$oid);
 	$redis->hset('user:'.$user_id,'connect_qq',$oid);
-	$url = $redis->get('site_url').'?m=user&a=set&done=绑定QQ账号成功';
+	$url = $redis->get('site_url').'?m=user&a=set&done=绑定QQ账号'.$uinfo["nickname"].'成功';
 else :
 	$user_id = $redis->zscore('user:connect:qq',$oid);
 	if($user_id>0) :
@@ -19,7 +19,7 @@ else :
 		$_SESSION['user_name'] = $redis->hget('user:'.$user_id,'user_name');
 		$_SESSION['user_pass'] = $redis->hget('user:'.$user_id,'user_pass');
 		$user_level = $redis->hget('user:'.$user_id,'user_level');
-		$url = $redis->get('site_url').'?m=user&a=index&id='.$user_id;
+		$url = $redis->get('site_url').'?m=user&a=index&id='.$user_id.'&done=使用QQ账号'.$uinfo["nickname"].'成功';
 	else :
 		$_SESSION['connect_qq'] = $oid;
 		$url = maoo_url('user','register',array('done'=>'使用QQ账号'.$uinfo["nickname"].'注册本站账号并绑定','noreferer'=>'yes'));

@@ -1,11 +1,4 @@
 <?php
-function maoo_serialize($obj) {
-   return base64_encode(gzcompress(serialize($obj)));
-};
-//反序列化
-function maoo_unserialize($txt) {
-   return unserialize(gzuncompress(base64_decode($txt)));
-};
 class Mao10Mysql {
 	var $mysql;
 	var $prefix;

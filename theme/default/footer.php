@@ -9,7 +9,7 @@
             <div class="modal-body">
                 <form method="get" action="<?php echo $redis->get('site_url'); ?>">
 				    <div class="form-group">
-				        <input type="text" class="form-control" name="s" placeholder="搜索文章、话题、用户">
+				        <input type="text" class="form-control" name="s" placeholder="搜索文章、话题、用户、商品">
 				    </div>
 				</form>
             </div>
@@ -22,39 +22,6 @@
         $('#nav-show-bg').css('display','none');
     });
 </script>
-<?php if($redis->get('promod')!=1) : ?>
-<div class="pro-side-fixed hidden-xs hidden-sm">
-	<?php if($_GET['m']=='pro' && $_GET['a']=='single') : ?>
-	<?php if($redis->hget('user:'.maoo_user_id(),'user_level')==10) : ?>
-	<a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=editpro&id=<?php echo $id; ?>">
-		<i class="glyphicon glyphicon-edit"></i>
-		<div class="clearfix"></div>
-		编辑商品
-	</a>
-	<?php endif; ?>
-	<?php if(maoo_user_id()) : ?>
-		<?php if($redis->hget('user:'.maoo_user_id(),'user_level')!=10) : ?>
-		<a class="last" href="#" data-toggle="modal" data-target="#consultModal">
-			<i class="glyphicon glyphicon-envelope"></i>
-			<div class="clearfix"></div>
-			咨询店家
-		</a>
-		<?php endif; ?>
-	<?php else : ?>
-	<a class="last" href="<?php echo $redis->get('site_url'); ?>?m=user&a=login<?php if($_GET['a']=='logout') : echo '&noreferer=yes'; endif; ?>">
-		<i class="glyphicon glyphicon-envelope"></i>
-		<div class="clearfix"></div>
-		咨询店家
-	</a>
-	<?php endif; ?>
-	<?php endif; ?>
-	<a href="#toptg" class="goto">
-		<i class="glyphicon glyphicon-circle-arrow-up"></i>
-		<div class="clearfix"></div>
-		返回顶部
-	</a>
-</div>
-<?php endif; ?>
 <?php include('cart.php'); ?>
 <div class="mobile-foot-nav visible-xs-block visible-sm-block">
     <a class="mobile-foot-nav-item <?php if($_GET['m']=='' && $_GET['a']=='') echo 'active'; ?>" href="<?php echo $redis->get('site_url'); ?>">

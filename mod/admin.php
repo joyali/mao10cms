@@ -305,12 +305,44 @@ class Maoo {
 			include ROOT_PATH.'/theme/admin/404.php';
 		}
 	}
-	public function consult(){
+	public function postlist(){
 		global $redis;
 		if($redis->hget('user:'.maoo_user_id(),'user_level')==10) {
-			$user_id = maoo_user_id();
-			$maoo_title = '商品咨询 - '.$redis->get('site_name');
-			include ROOT_PATH.'/theme/admin/consult.php';
+			$maoo_title = '全部文章 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/admin/postlist.php';
+		} else {
+			$error = '请以管理员身份<a href="'.$redis->get('site_url').'/?m=user&a=login">登录</a>';
+			$maoo_title = '错误404';
+			include ROOT_PATH.'/theme/admin/404.php';
+		}
+	}
+	public function prolist(){
+		global $redis;
+		if($redis->hget('user:'.maoo_user_id(),'user_level')==10) {
+			$maoo_title = '全部商品 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/admin/prolist.php';
+		} else {
+			$error = '请以管理员身份<a href="'.$redis->get('site_url').'/?m=user&a=login">登录</a>';
+			$maoo_title = '错误404';
+			include ROOT_PATH.'/theme/admin/404.php';
+		}
+	}
+	public function deallist(){
+		global $redis;
+		if($redis->hget('user:'.maoo_user_id(),'user_level')==10) {
+			$maoo_title = '全部项目 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/admin/deallist.php';
+		} else {
+			$error = '请以管理员身份<a href="'.$redis->get('site_url').'/?m=user&a=login">登录</a>';
+			$maoo_title = '错误404';
+			include ROOT_PATH.'/theme/admin/404.php';
+		}
+	}
+	public function bbslist(){
+		global $redis;
+		if($redis->hget('user:'.maoo_user_id(),'user_level')==10) {
+			$maoo_title = '全部帖子 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/admin/bbslist.php';
 		} else {
 			$error = '请以管理员身份<a href="'.$redis->get('site_url').'/?m=user&a=login">登录</a>';
 			$maoo_title = '错误404';

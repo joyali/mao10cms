@@ -52,7 +52,7 @@
 <header id="header">
     <div class="mobile-header-logo visible-xs-block visible-sm-block"></div>
 	<span class="bg"></span>
-	<div class="container-fluid">
+	<div class="container">
 		<div class="row">
 			<div class="col-md-8 col">
                 <a class="logo pull-left hidden-xs" href="<?php echo $redis->get('site_url'); ?>">
@@ -75,14 +75,6 @@
 						</a>
 					</li>
 					<?php if(maoo_user_id()) : ?>
-					<li class="message">
-						<a href="#" data-toggle="modal" data-target="#messageModal">
-							<i class="glyphicon glyphicon-envelope"></i>
-							<?php if($redis->hget('user:'.maoo_user_id(),'message')>0) : ?>
-							<span><?php echo $redis->hget('user:'.maoo_user_id(),'message'); ?></span>
-							<?php endif; ?>
-						</a>
-					</li>
 					<li class="cart">
 						<a href="#" data-toggle="modal" data-target="#cartModal">
 		                  <i class="glyphicon glyphicon-shopping-cart"></i>
@@ -181,78 +173,6 @@
 	</div>
 </header>
 <?php if(maoo_user_id()) : ?>
-<div class="modal fade" id="messageModal" tabindex="-1" role="dialog">
-	<div class="modal-dialog" role="document">
-		<div class="modal-content">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">
-						&times;
-					</span>
-				</button>
-				<h4 class="modal-title">
-					<i class="glyphicon glyphicon-envelope"></i> 我的信息
-				</h4>
-			</div>
-			<div class="modal-body">
-				<?php
-					$message_db = $redis->lrange('message:user:'.maoo_user_id(),0,19);
-					$redis->ltrim('message:user:'.maoo_user_id(), 0, 19);
-					if($message_db) :
-				?>
-				<ul class="media-list">
-				<?php foreach($message_db as $mes_id) : ?>
-				<li class="media <?php if($redis->hget('message:'.$mes_id,'unread')==1) echo 'unread'; ?>">
-					<div class="media-left">
-						<a href="<?php echo maoo_url('user','index',array('id'=>$redis->hget('message:'.$mes_id,'user1'))); ?>">
-							<img class="media-object" src="<?php echo maoo_user_avatar($redis->hget('message:'.$mes_id,'user1')); ?>" alt="<?php echo maoo_user_display_name($redis->hget('message:'.$mes_id,'user1')); ?>">
-						</a>
-					</div>
-					<div class="media-body">
-						<div class="mb-10">
-						<?php echo $redis->hget('message:'.$mes_id,'text'); ?>
-						</div>
-						<?php echo maoo_format_date($redis->hget('message:'.$mes_id,'date')); ?>
-					</div>
-				</li>
-				<?php endforeach; ?>
-				</ul>
-				<?php else : ?>
-				<div class="nothing">
-					暂无任何信息
-				</div>
-				<?php endif; ?>
-			</div>
-			<div class="modal-footer">
-				<a class="btn btn-danger pull-left" href="javascript:maoo_unread();">
-					全部已读
-				</a>
-				<button type="button" class="btn btn-default" data-dismiss="modal">
-					关闭
-				</button>
-			</div>
-		</div>
-	</div>
-</div>
-<script>
-		function maoo_unread() {
-			$.ajax({
-				url: '<?php echo $redis->get('site_url'); ?>/do/unread.php',
-				type: 'GET',
-				dataType: 'html',
-				timeout: 9000,
-				error: function() {
-					alert('提交失败！');
-				},
-				success: function(html) {
-					$('#header .text-right .message span').remove();
-					$('#messageModal .media-list .media').removeClass('unread');
-					$('#messageModal .btn-danger').text('已标记');
-					$('#messageModal .btn-danger').href('javascript:;');
-				}
-			});
-		};
-</script>
 <div class="modal fade" id="coinsModal" tabindex="-1" role="dialog">
 	<div class="modal-dialog modal-lg" role="document">
 		<div class="modal-content">

@@ -1,6 +1,15 @@
 <?php
 require __DIR__.'/../autoload.php';
 
+//序列化
+function maoo_serialize($obj) {
+   return base64_encode(gzcompress(serialize($obj)));
+};
+//反序列化
+function maoo_unserialize($txt) {
+   return unserialize(gzuncompress(base64_decode($txt)));
+};
+
 //判断程序是否安装
 function maoo_is_install() {
     global $redis;
@@ -165,7 +174,6 @@ function maoo_nav() {
 		endforeach;
 	else :
 		$nav .= '<a class="nav-item" href="'.maoo_url('post','latest').'">最新</a>';
-		$nav .= '<a class="nav-item" href="'.maoo_url('post','topic').'">话题</a>';
 		$nav .= '<a class="nav-item" href="'.maoo_url('index','authors').'">作者</a>';
 		$nav .= '<a class="nav-item" href="'.maoo_url('bbs').'">社区</a>';
 		$nav .= '<a class="nav-item" href="'.maoo_url('pro').'">商品</a>';
@@ -179,10 +187,11 @@ function maoo_link() {
 	global $redis;
 	$db = $redis->zrevrange('link:list',0,99);
 	if($db) :
-        $nav .= '<h4 class="title">友情链接：</h4>';
+        $nav .= '<div class="link-box"><div class="container"><div class="link-box-in"><h4 class="title">友情链接：</h4>';
 		foreach($db as $page_id) : $number = $redis->zscore('link:list',$page_id);
 			$nav .= '<a class="link-item" target="_blank" href="'.$redis->hget('link:'.$page_id,'link').'">'.$redis->hget('link:'.$page_id,'text').'</a>';
 		endforeach;
+        $nav .= '</div></div></div>';
 	endif;
 	return $nav;
 };
@@ -456,7 +465,7 @@ function maoo_pagenavi($count,$page_now,$size=false) {
 	$page_count = ceil($count/$Page_size);
 
 	$init=1;
-	$page_len=7;
+	$page_len=5;
 	$max_p=$page_count;
 	$pages=$page_count;
 
@@ -684,67 +693,7 @@ function maoo_set_views($id,$type='post') {
             $redis->hset($type.':'.$id,'views',$count+1);
         };
         $redis->incr($type.'_views_incr');
-        //rank核算
-        if($type=='post') :
-            maoo_post_rank($id);
-        endif;
     endif;
-};
-function maoo_post_rank($id) {
-	global $redis;
-	$site_like_count = $redis->get('post_like_count_incr'); //全站点赞次数
-	$site_post_views = $redis->get('post_views_incr'); //全站浏览量
-	$threshold = floor($site_post_views/$site_like_count); //浏览与点赞比例阙值
-	$post_views = maoo_get_views($id,'post');
-	$like_count = $redis->hget('post:'.$id,'like_count');
-	$post_maybe_like = ($post_views-$post_views%$threshold)/$threshold;
-	$rank = $redis->hget('post:'.$id,'rank');
-	if($post_maybe_like>1) :
-		if($like_count>$post_maybe_like) :
-			$like_plus = $like_count-$post_maybe_like;
-			$rank_true = $rank+1+$like_plus;
-		elseif($like_count==$post_maybe_like) :
-			$rank_true = $rank+1;
-		else :
-			$like_plus = $post_maybe_like-$like_count;
-			$rank_true = $rank-$like_plus;
-		endif;
-		maoo_rank_keeping($id,$rank_true);
-	else :
-		if($like_count>$post_maybe_like) :
-			$rank_true = $rank+$like_count;
-			maoo_rank_keeping($id,$rank_true);
-		elseif($like_count==1) :
-			$rank_true = $rank+1;
-			maoo_rank_keeping($id,$rank_true);
-		else :
-			//不增加rank
-		endif;
-	endif;
-};
-function maoo_rank_keeping($id,$rank_true) {
-	global $redis;
-	$author_id = $redis->hget('post:'.$id,'author');
-	//author rank1 核算
-	$author_rank1_now = $redis->hget('user:'.$author_id,'rank1');
-	$author_post_count = $redis->scard('user_post_id:'.$author_id)+$redis->scard('del_user_post_id:'.$author_id);
-	$rank_true_now = $redis->zscore('rank_list',$id);
-	$author_rank1_new = floor(($author_rank1_now*$author_post_count-$rank_true_now+$rank_true)/$author_post_count);
-	$redis->hset('user:'.$author_id,'rank1',$author_rank1_new);
-	$redis->zrem('user_rank_list',$author_id);
-	$redis->zadd('user_rank_list',$author_rank1_new,$author_id);
-	//post rank核算
-	$redis->hset('post:'.$id,'rank',$rank_true);
-	$redis->zrem('rank_list',$id);
-	$redis->zadd('rank_list',$rank_true,$id);
-	//topic rank核算
-	$topic_id = $redis->hget('post:'.$id,'topic');
-	$topic_rank_now = $redis->hget('topic:'.$topic_id,'rank');
-	$topic_post_count = $redis->scard('topic_post_id:'.$topic_id);
-	$topic_rank_new = round(($topic_rank_now*$topic_post_count-$rank_true_now+$rank_true)/$topic_post_count,0);
-	$redis->hset('topic:'.$topic_id,'rank',$topic_rank_new);
-	$redis->zrem('topic_rank_list',$topic_id);
-	$redis->zadd('topic_rank_list',$topic_rank_new,$topic_id);
 };
 //喜欢按钮
 function maoo_like_count($id) {
@@ -865,40 +814,27 @@ function maoo_guanzhu_js() {
 	};
 };
 
-//订阅数量
-function maoo_sub_count($id) {
-	global $redis;
-	$sub_count = $redis->hget('topic:'.$id,'sub_count');
-	if($sub_count>0) {
-		return $sub_count;
-	} else {
-		return 0;
-	};
-};
-//订阅按钮
-function maoo_sub_btn($id) {
+//点赞按钮
+function maoo_zan_btn($id) {
 	global $redis;
 	if(maoo_user_id()) {
-		if($redis->hget('topic:'.$id,'author')!=maoo_user_id()) {
-			$user_sub = $redis->zscore('user_sub_topic_id:'.maoo_user_id(),$id);
-			if($user_sub) {
-				$btn = '<a href="javascript:maoo_remove_sub('.$id.');" id="maoo_sub_'.$id.'" class="active btn btn-default btn-like"><i class="glyphicon glyphicon-remove-circle"></i> 取消订阅<span>'.maoo_sub_count($id).'</span></a>';
-			} else {
-				$btn = '<a href="javascript:maoo_add_sub('.$id.');" id="maoo_sub_'.$id.'" class="btn btn-default btn-like"><i class="glyphicon glyphicon-ok-circle"></i> 订阅<span>'.maoo_sub_count($id).'</span></a>';
-			}
-		}
+        $zan = $redis->sismember('activity_zan_id:'.$id,maoo_user_id());
+        if($zan) {
+            $btn = '<a href="javascript:maoo_remove_zan('.$id.');" id="maoo_zan_'.$id.'" class="btn-zan"><i class="fa fa-heart"></i> 取消</a>';
+        } else {
+            $btn = '<a href="javascript:maoo_add_zan('.$id.');" id="maoo_zan_'.$id.'" class="btn-zan"><i class="fa fa-heart-o"></i> 点赞</a>';
+        }
 	} else {
-		$btn = '<a href="'.$redis->get('site_url').'?m=user&a=login" id="maoo_sub_'.$id.'" class="btn btn-default btn-like"><i class="glyphicon glyphicon-ok-circle"></i> 订阅<span>'.maoo_sub_count($id).'</span></a>';
+		$btn = '<a href="'.$redis->get('site_url').'?m=user&a=login" id="maoo_zan_'.$id.'" class="btn-zan"><i class="fa fa-heart-o"></i> 点赞</a>';
 	};
 	return $btn;
 };
-function maoo_sub_js() {
+function maoo_zan_js() {
 	global $redis;
 	if(maoo_user_id()) {
-		$url = $redis->get('site_url').'/do/sub.php?id=';
-		$url2 = $redis->get('site_url').'/do/remove-sub.php?id=';
+		$url = $redis->get('site_url').'/do/zan.php?id=';
 		$js .= "<script>
-		function maoo_add_sub(id) {
+		function maoo_add_zan(id) {
 			$.ajax({
 				url: '".$url."' + id,
 				type: 'GET',
@@ -908,18 +844,16 @@ function maoo_sub_js() {
 					alert('提交失败！');
 				},
 				success: function(html) {
-					var count = $('#maoo_sub_'+id+' span').text()*1+1;
-					$('#maoo_sub_'+id).attr('href','javascript:maoo_remove_sub('+id+');');
-					$('#maoo_sub_'+id).addClass('active');
-					$('#maoo_sub_'+id).html('<i class=\'glyphicon glyphicon-remove-circle\'></i> 取消订阅<span>'+count+'</span>');
+					$('#maoo_zan_'+id).attr('href','javascript:maoo_remove_zan('+id+');');
+					$('#maoo_zan_'+id).html('<i class=\'fa fa-heart\'></i> 取消');
 				}
 			});
 		};
 		</script>";
 		$js .= "<script>
-		function maoo_remove_sub(id) {
+		function maoo_remove_zan(id) {
 			$.ajax({
-				url: '".$url2."' + id,
+				url: '".$url."' + id,
 				type: 'GET',
 				dataType: 'html',
 				timeout: 9000,
@@ -927,10 +861,8 @@ function maoo_sub_js() {
 					alert('提交失败！');
 				},
 				success: function(html) {
-					var count = $('#maoo_sub_'+id+' span').text()*1-1;
-					$('#maoo_sub_'+id).attr('href','javascript:maoo_add_sub('+id+');');
-					$('#maoo_sub_'+id).removeClass('active');
-					$('#maoo_sub_'+id).html('<i class=\'glyphicon glyphicon-ok-circle\'></i> 订阅<span>'+count+'</span>');
+					$('#maoo_zan_'+id).attr('href','javascript:maoo_add_zan('+id+');');
+					$('#maoo_zan_'+id).html('<i class=\'fa fa-heart-o\'></i> 点赞');
 				}
 			});
 		};
@@ -1089,27 +1021,6 @@ function maoo_fmimg($id,$type='post') {
 		return $redis->get('site_url').$fmimg;
 	};
 };
-//获取话题排名
-function maoo_topic_rank($id) {
-	global $redis;
-	if($redis->zscore('topic_rank_list',$id)>0) :
-		foreach($redis->zrevrange('topic_rank_list',0,-1) as $topic_id) :
-			$num++;
-			if($topic_id==$id) :
-				return $num;
-			endif;
-		endforeach;
-	else :
-		return 0;
-	endif;
-};
-//获取话题待审核文章数
-function maoo_topic_contribute_count($id) {
-	global $redis;
-	if($redis->hget('topic:'.$id,'permission')==3) :
-		return '<span class="contribute-count">'.$redis->scard('con_topic_post_id:'.$id).'</span>';
-	endif;
-};
 //时间格式化
 function maoo_format_date($time){
     $t=time()-$time;
@@ -1234,22 +1145,20 @@ function maoo_comment_json($pid,$type) {
 		return json_encode($comments);
 };
 //新增信息
-function maoo_add_message($user1,$user2,$text,$type=false) {
+function maoo_add_message($user,$text,$type=false) {
 	global $redis;
-	$comment['text'] = $text;
-	$comment['user1'] = $user1;
-	$comment['user2'] = $user2;
-	$comment['date'] = strtotime("now");
-	$comment['unread'] = 1;
-	if($text && $user1>0 && $user2>0 && $user1!=$user2) :
-		$id = $redis->incr('message:id_incr');
-		if($type==true) :
-			$redis->lpush('message:user:'.$user1,$id);
-		endif;
-		$redis->lpush('message:user:'.$user2,$id);
-		$redis->hmset('message:'.$id,$comment);
-		$redis->hset('user:'.$user2,'message',$redis->hget('user:'.$user2,'message')+1);
-		$redis->expire('message:'.$id,86400*10);
+	$date['content'] = $text;
+	$date['author'] = $user;
+	$date['date'] = strtotime("now");
+	if($text && $user>0) :
+		$id = $redis->incr('activity_id_incr');
+        $date['id'] = $id;
+        if($type) :
+            $date['private'] = 1;
+        endif;
+        $redis->hmset('activity:'.$id,$date);
+        $redis->sadd('activity_id',$id);
+        $redis->sadd('user_activity_id:'.$user,$id);
 	endif;
 };
 //文件覆盖

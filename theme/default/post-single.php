@@ -14,9 +14,9 @@
 							<li class="hidden-xs hidden-sm"><?php echo date('Y/m/d',$redis->hget('post:'.$id,'date')); ?></li>
 							<li>•</li>
 							<li><?php echo maoo_get_views($id); ?>人阅读</li>
-							<?php if($redis->hget('post:'.$id,'topic')>0) : ?>
+							<?php if($redis->hget('post:'.$id,'term')>0) : ?>
 							<li>•</li>
-							<li><a href="<?php echo maoo_url('post','topic',array('id'=>$redis->hget('post:'.$id,'topic'))); ?>"><?php echo $redis->hget('topic:'.$redis->hget('post:'.$id,'topic'),'title'); ?></a></li>
+							<li><a href="<?php echo maoo_url('post','term',array('id'=>$redis->hget('post:'.$id,'term'))); ?>"><?php echo maoo_term_title($redis->hget('post:'.$id,'term')); ?></a></li>
 							<?php endif; ?>
 							<?php if($redis->hget('post:'.$id,'tags')) : ?>
 							<li>•</li>
@@ -151,8 +151,8 @@
 				<a class="name wto" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><?php echo maoo_user_display_name($author); ?></a>
                 <div class="clearfix mb-20"></div>
                 <ul class="list-inline mb-10">
-                    <li><a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">文章 <?php echo $redis->scard('user_post_id:'.$author); ?></a></li>
-                    <li><a href="<?php echo maoo_url('user','topic',array('id'=>$author)); ?>">话题 <?php echo $redis->scard('user_topic_id:'.$author); ?></a></li>
+                    <li><a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">动态 <?php echo $redis->scard('user_activity_id:'.$author); ?></a></li>
+                    <li><a href="<?php echo maoo_url('user','post',array('id'=>$author)); ?>">文章 <?php echo $redis->scard('user_post_id:'.$author); ?></a></li>
                     <li><a href="<?php echo maoo_url('user','comment',array('id'=>$author)); ?>">评论 <?php echo $redis->scard('user_comment_id:'.$author); ?></a></li>
                 </ul>
                 <div id="share-box">
@@ -192,19 +192,6 @@
 					</li>
 					<?php endforeach; ?>
 				</ul>
-			</div>
-			<div class="home-side-box side-topic-list">
-				<h4 class="title mt-0 mb-20">
-					热门话题
-					<a class="pull-right" href="<?php echo maoo_url('post','topic'); ?>">更多</a>
-				</h4>
-				<div class="side-topic-box">
-					<?php $db = $redis->sort('topic_id',array('sort'=>'desc','limit' =>array(0,10))); ?>
-					<?php foreach($db as $topic_id) : ?>
-					<a class="side-topic" href="<?php echo maoo_url('post','topic',array('id'=>$topic_id)); ?>"><?php echo $redis->hget('topic:'.$topic_id,'title'); ?></a>
-					<?php endforeach; ?>
-					<div class="clearfix"></div>
-				</div>
 			</div>
             <?php if($redis->get('promod')!=1) : ?>
 			<div class="home-side-box side-pro-list">

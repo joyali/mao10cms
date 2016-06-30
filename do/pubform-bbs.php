@@ -48,11 +48,8 @@ if(maoo_user_id()>0) :
 					$redis->hmset('bbs:'.$id,$_POST['page']);
 					$redis->hset('user:'.$user_id,'user_pubbbs_date',$_POST['page']['date']);
 					//消息
-					$text = '<h4 class="title"><a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a> 发表了帖子 <a href="'.maoo_url('bbs','single',array('id'=>$id)).'">'.$redis->hget('bbs:'.$id,'title').'</a></h4>'.maoo_cut_str(strip_tags($_POST['page']['content']),30);
-					$db = $redis->zrevrange('user_fans:'.$user_id,0,999);
-					foreach($db as $rank_user_id) :
-						maoo_add_message($user_id,$rank_user_id,$text);
-					endforeach;
+					$text = '我发表了帖子《<a href="'.maoo_url('bbs','single',array('id'=>$id)).'">'.$redis->hget('bbs:'.$id,'title').'</a>》：'.maoo_cut_str(strip_tags($_POST['page']['content']),30);
+					maoo_add_message($user_id,$text);
 					$url = $redis->get('site_url').'?m=bbs&a=single&done=发布成功&id='.$id;
 				else :
 					$url = $redis->get('site_url').'?m=bbs&a=publish&done=发布文章间隔不得小于2分钟';

@@ -19,7 +19,8 @@
 						类型
 					</label>
 					<select name="type" class="form-control">
-						<?php foreach($redis->smembers('post_type') as $type) : ?>
+                        <?php $types = array('post','bbs','pro','deal'); ?>
+						<?php foreach($types as $type) : ?>
 						<option value="<?php echo $type; ?>">
 							<?php echo $type; ?>
 						</option>
@@ -31,7 +32,7 @@
 				</button>
 			</form>
 			<hr class="mb-40">
-			<?php foreach($redis->smembers('post_type') as $type) : ?>
+			<?php foreach($types as $type) : ?>
 			<h4 class="mb-20"><?php echo $type; ?>分类</h4>
 			<table class="table table-striped table-bordered table-hover mb-40">
 				<thead>

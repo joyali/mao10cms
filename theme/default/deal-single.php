@@ -245,16 +245,6 @@
             </div>
         </div>
         <div class="col-sm-3 col">
-            <?php if($redis->hget('user:'.maoo_user_id(),'user_level')==10) : ?>
-            <div class="row mb-20">
-                <div class="col-xs-6 col">
-                    <a class="btn btn-default btn-block" href="<?php echo maoo_url('deal','edit',array('id'=>$id)); ?>">编辑</a>
-                </div>
-                <div class="col-xs-6 col">
-                    <a class="btn btn-danger btn-block" href="<?php echo $redis->get('site_url'); ?>/do/delete.php?id=<?php echo $id; ?>&type=deal">删除</a>
-                </div>
-            </div>
-            <?php endif; ?>
             <div class="thumbnail text-center deal-author">
                 <a class="img-div" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">
                     <img class="media-object" src="<?php echo maoo_user_avatar($author); ?>" alt="<?php echo maoo_user_display_name($author); ?>">

@@ -1,6 +1,56 @@
 <?php
 class Maoo {
-	public function index(){
+    public function index(){
+        global $redis;
+        if($_GET['id']>0) {
+			$user_id = $_GET['id'];
+        } elseif(maoo_user_id()) {
+            $user_id = maoo_user_id();
+        };
+        if($user_id) :
+            if($redis->get('site_title')) :
+				$maoo_title = $redis->get('site_title');
+			else :
+				$maoo_title = $redis->get('site_name');
+			endif;
+            $maoo_title = $maoo_title.$maoo_title_page;
+			$maoo_keywords = $redis->get('site_keywords');
+			$maoo_description = $redis->get('site_description');
+            if($user_id==maoo_user_id()) : 
+                $who = '我';
+            else :
+                $who = 'TA';
+            endif;
+            //所有关注的用户
+            $guanzhus = $redis->zrevrange('user_guanzhu:'.$user_id,0,-1);
+            $db = $redis->sort('activity_id',array('sort'=>'desc','limit'=>array(0,2000)));
+            foreach($db as $key=>$val) :
+                $author = $redis->hget('activity:'.$val,'author');
+                if(in_array($author,$guanzhus) && $redis->hget('activity:'.$val,'private')!=1) :
+                    //
+                elseif($author==$user_id) :
+                    //
+                else :
+                    unset($db[$key]);
+                endif;
+            endforeach;
+            $count = count($db);
+            $page_now = $_GET['page'];
+            $page_size = 20;
+            if(empty($page_now) || $page_now<1) :
+                $page_now = 1;
+            else :
+                $page_now = $_GET['page'];
+            endif;
+            $offset = ($page_now-1)*$page_size;
+            $db = array_slice($db,$offset,$page_size);
+            include ROOT_PATH.'/theme/'.maoo_theme().'/timeline.php';
+        else :
+            $maoo_title = '用户登录 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
+        endif;
+    }
+	public function post(){
 		global $redis;
 		if($_GET['id']>0) {
 			$user_id = $_GET['id'];
@@ -16,7 +66,7 @@ class Maoo {
 				endif;
 				$offset = ($page_now-1)*$page_size;
 				$db = $redis->sort('user_post_id:'.$user_id,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-				include ROOT_PATH.'/theme/'.maoo_theme().'/user-home.php';
+				include ROOT_PATH.'/theme/'.maoo_theme().'/user-post.php';
 			} else {
 				$error = '该用户已被删除';
 				$maoo_title = '错误404 - '.$redis->get('site_name');
@@ -35,7 +85,7 @@ class Maoo {
 				endif;
 				$offset = ($page_now-1)*$page_size;
 				$db = $redis->sort('user_post_id:'.$user_id,array('sort'=>'desc','limit'=>array($offset,$page_size)));
-			include ROOT_PATH.'/theme/'.maoo_theme().'/user-home.php';
+			include ROOT_PATH.'/theme/'.maoo_theme().'/user-post.php';
 		} else {
 			$maoo_title = '用户登录 - '.$redis->get('site_name');
 			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
@@ -158,48 +208,6 @@ class Maoo {
 		} else {
 			$maoo_title = '用户登录 - '.$redis->get('site_name');
 			include ROOT_PATH.'/theme/login.php';
-		}
-	}
-	public function topic(){
-		global $redis;
-		if($_GET['id']>0) {
-			$user_id = $_GET['id'];
-			if($redis->hget('user:'.$user_id,'del')!=1) {
-				$maoo_title = $redis->hget('user:'.$user_id,'title').'发起的话题 - '.$redis->get('site_name');
-				include ROOT_PATH.'/theme/'.maoo_theme().'/user-topic.php';
-			} else {
-				$error = '该用户已被删除';
-				$maoo_title = '错误404 - '.$redis->get('site_name');
-				include ROOT_PATH.'/theme/'.maoo_theme().'/404.php';
-			}
-		} elseif(maoo_user_id()) {
-			$user_id = maoo_user_id();
-			$maoo_title = '我的话题 - '.$redis->get('site_name');
-			include ROOT_PATH.'/theme/'.maoo_theme().'/user-topic.php';
-		} else {
-			$maoo_title = '用户登录 - '.$redis->get('site_name');
-			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
-		}
-	}
-	public function subtopic(){
-		global $redis;
-		if(maoo_user_id()) {
-			$user_id = maoo_user_id();
-			$maoo_title = '我订阅的话题 - '.$redis->get('site_name');
-            $count = $redis->zcard('user_sub_topic_id:'.$user_id);
-                            $page_now = $_GET['page'];
-                            $page_size = $redis->get('page_size');
-                            if(empty($page_now) || $page_now<1) :
-                                $page_now = 1;
-                            else :
-                                $page_now = $_GET['page'];
-                            endif;
-                            $offset = ($page_now-1)*$page_size;
-                            $db = $redis->zrevrange('user_sub_topic_id:'.$user_id,$offset,$offset+$page_size-1);
-			include ROOT_PATH.'/theme/'.maoo_theme().'/user-sub-topic.php';
-		} else {
-			$maoo_title = '用户登录 - '.$redis->get('site_name');
-			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
 		}
 	}
 	public function set(){
