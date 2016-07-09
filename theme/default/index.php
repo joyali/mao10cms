@@ -28,41 +28,45 @@
 	</div>
 	<?php endif; ?>
     <?php echo maoo_ad('home1'); ?>
-	<div class="row post-list">
+	<div class="row">
 		<div class="col-sm-9 col">
-		<h4 class="title mt-0 mb-10 hidden-xs hidden-sm">热门文章</h4>
-		<?php foreach($db as $page_id) : $numad++; ?>
-		<div class="post-<?php echo $page_id; ?> post mb-20">
-					<a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
-						<img src="<?php echo maoo_fmimg($page_id); ?>">
-					</a>
-					<div class="post-right">
-						<h2 class="title">
-							<a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
-								<?php echo $redis->hget('post:'.$page_id,'title'); ?>
-							</a>
-						</h2>
-						<?php $author = $redis->hget('post:'.$page_id,'author'); ?>
-						<div class="author mb-10">
-							<a class="avatar" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><img src="<?php echo maoo_user_avatar($author); ?>" alt="<?php echo maoo_user_display_name($author); ?>"></a> <a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><?php echo maoo_user_display_name($author); ?></a><span class="dian">•</span><span><?php echo date('Y/m/d',$redis->hget('post:'.$page_id,'date')); ?></span>
-							<div class="clearfix"></div>
-						</div>
-						<div class="entry mb-10">
-							<?php echo maoo_cut_str(strip_tags($redis->hget('post:'.$page_id,'content')),33); ?>
-						</div>
-						<ul class="list-inline mb-0">
-							<?php if($redis->hget('post:'.$page_id,'term')>0) : ?>
-							<li><i class="glyphicon glyphicon-tag"></i> <a href="<?php echo maoo_url('post','term',array('id'=>$redis->hget('post:'.$page_id,'term'))); ?>"><?php echo maoo_term_title($redis->hget('post:'.$page_id,'term')); ?></a></li>
-							<?php endif; ?>
-							<li><i class="glyphicon glyphicon-heart"></i> <?php echo maoo_like_count($page_id); ?></li>
-							<li><i class="glyphicon glyphicon-eye-open"></i> <?php echo maoo_get_views($page_id); ?></li>
-						</ul>
-					</div>
-					<div class="clearfix"></div>
-				</div>
-        <?php if($numad==2) : ?><?php echo maoo_ad('home2'); ?><?php endif; ?>
-		<?php endforeach; ?>
-		<?php echo maoo_pagenavi($count,$page_now); ?>
+            <div class="post-list">
+                <div class="home-side-box mb-0">
+                    <h4 class="title mt-0 mb-10 hidden-xs hidden-sm"><i class="fa fa-fire"></i> 热门文章</h4>
+                </div>
+                <?php foreach($db as $page_id) : $numad++; ?>
+                <div class="post-<?php echo $page_id; ?> post mb-20">
+                            <a class="pull-left img-div" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
+                                <img src="<?php echo maoo_fmimg($page_id); ?>">
+                            </a>
+                            <div class="post-right">
+                                <h2 class="title">
+                                    <a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
+                                        <?php echo $redis->hget('post:'.$page_id,'title'); ?>
+                                    </a>
+                                </h2>
+                                <?php $author = $redis->hget('post:'.$page_id,'author'); ?>
+                                <div class="author mb-10">
+                                    <a class="avatar" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><img src="<?php echo maoo_user_avatar($author); ?>" alt="<?php echo maoo_user_display_name($author); ?>"></a> <a href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>"><?php echo maoo_user_display_name($author); ?></a><span class="dian">•</span><span><?php echo date('Y/m/d',$redis->hget('post:'.$page_id,'date')); ?></span>
+                                    <div class="clearfix"></div>
+                                </div>
+                                <div class="entry mb-10">
+                                    <?php echo maoo_cut_str(strip_tags($redis->hget('post:'.$page_id,'content')),33); ?>
+                                </div>
+                                <ul class="list-inline mb-0">
+                                    <?php if($redis->hget('post:'.$page_id,'term')>0) : ?>
+                                    <li><i class="glyphicon glyphicon-tag"></i> <a href="<?php echo maoo_url('post','term',array('id'=>$redis->hget('post:'.$page_id,'term'))); ?>"><?php echo maoo_term_title($redis->hget('post:'.$page_id,'term')); ?></a></li>
+                                    <?php endif; ?>
+                                    <li><i class="glyphicon glyphicon-heart"></i> <?php echo maoo_like_count($page_id); ?></li>
+                                    <li><i class="glyphicon glyphicon-eye-open"></i> <?php echo maoo_get_views($page_id); ?></li>
+                                </ul>
+                            </div>
+                            <div class="clearfix"></div>
+                        </div>
+                <?php if($numad==2) : ?><?php echo maoo_ad('home2'); ?><?php endif; ?>
+                <?php endforeach; ?>
+                <?php echo maoo_pagenavi($count,$page_now); ?>
+            </div>
 		</div>
 		<div class="col-sm-3 col hidden-xs hidden-sm">
             <?php echo maoo_ad('home3'); ?>

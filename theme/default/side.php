@@ -1,6 +1,6 @@
 <div class="home-side-box side-latest-post">
 				<h4 class="title mt-0 mb-10">
-					最新文章
+					<i class="fa fa-bars"></i> 最新文章
 					<a class="pull-right" href="<?php echo maoo_url('post','latest'); ?>">更多</a>
 				</h4>
 				<ul class="media-list">
@@ -26,7 +26,7 @@
 			</div>
             <div class="home-side-box side-comment-list">
 					<h4 class="title mt-0 mb-10">
-						最新评论
+						<i class="fa fa-commenting-o"></i> 最新评论
 					</h4>
 					<?php $comments = $redis->sort('comment_id',array('sort'=>'desc','limit'=>array(0,4))); ?>
 					<ul class="media-list">
@@ -60,7 +60,7 @@
             <?php if($redis->get('promod')!=1) : ?>
 			<div class="home-side-box side-pro-list">
 				<h4 class="title mt-0 mb-10">
-					会员专购
+					<i class="fa fa-bookmark-o"></i> 会员专购
 					<a class="pull-right" href="<?php echo maoo_url('pro'); ?>">更多</a>
 				</h4>
 				<?php

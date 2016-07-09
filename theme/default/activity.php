@@ -7,7 +7,7 @@ foreach($activityShow as $key=>$val) :
 endforeach;
 $activityShow = array_slice($activityShow,0,5);
 if($activityShow) : ?>
-<div class="activityShowList <?php if($_SESSION['dont_show_activity']!=1) : ?>active<?php endif; ?>">
+<div class="activityShowList <?php if($_SESSION['dont_show_activity']!=1) : ?>active<?php endif; ?> hidden-xs hidden-sm">
     <div class="toggle">
         <i class="fa fa-angle-down"></i>
         <i class="fa fa-angle-up"></i>
