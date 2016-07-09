@@ -4,7 +4,11 @@ if(maoo_user_id()>0) :
 	$user_id = maoo_user_id();
 	if($_GET['pid']>0 && $_GET['coins']>0) :
 		$pid = $_GET['pid'];
-		$author = $redis->hget('post:'.$pid,'author');
+        if($_GET['type']=='user') :
+            $author = $pid;
+        else :
+            $author = $redis->hget('post:'.$pid,'author');
+        endif;
 		if($author>0 && $author!=$user_id && $redis->hget('user:'.$user_id,'user_last_ip')!=$redis->hget('user:'.$author,'user_last_ip')) :
 			$coins = maoo_user_coins($user_id);
 			$coins2 = maoo_user_coins($author);
@@ -21,7 +25,11 @@ if(maoo_user_id()>0) :
 				$coinsobj->coins = $_GET['coins'];
 				$coinsobj->date = strtotime("now");
 				$redis->lpush('coins:user:'.$author,serialize($coinsobj));
-				$url = $redis->get('site_url').'?m=post&a=single&id='.$pid.'&done=打赏成功#post-author-box';
+                if($_GET['type']=='user') :
+                    $url = $redis->get('site_url').'?m=user&a=index&id='.$pid.'&done=打赏成功';
+                else :
+				    $url = $redis->get('site_url').'?m=post&a=single&id='.$pid.'&done=打赏成功#post-author-box';
+                endif;
 			else :
 				if($coins>0) :
 					$redis->hset('user:'.$user_id,'coins',0);
@@ -36,16 +44,24 @@ if(maoo_user_id()>0) :
 					$coinsobj->coins = $coins;
 					$coinsobj->date = strtotime("now");
 					$redis->lpush('coins:user:'.$author,serialize($coinsobj));
-					$url = $redis->get('site_url').'?m=post&a=single&id='.$pid.'&done=已将您全部积分共 '.$coins.' 打赏出去啦#post-author-box';
+                    if($_GET['type']=='user') :
+                        $url = $redis->get('site_url').'?m=user&a=index&id='.$pid.'&done=已将您全部积分共 '.$coins.' 打赏出去啦';
+                    else :
+                        $url = $redis->get('site_url').'?m=post&a=single&id='.$pid.'&done=已将您全部积分共 '.$coins.' 打赏出去啦#post-author-box';
+                    endif;
 				else :
-					$url = $redis->get('site_url').'?m=post&a=single&id='.$pid.'&done=您没有积分哦#post-author-box';
+                    if($_GET['type']=='user') :
+                        $url = $redis->get('site_url').'?m=user&a=index&id='.$pid.'&done=您没有积分哦';
+                    else :
+                        $url = $redis->get('site_url').'?m=post&a=single&id='.$pid.'&done=您没有积分哦#post-author-box';
+                    endif;
 				endif;
 			endif;
 		else:
-			$url = $redis->get('site_url').'?done=不能打赏自己哦';
+			$url = $redis->get('site_url').'?m=user&a=index&done=不能打赏自己哦';
 		endif;
 	else:
-		$url = $redis->get('site_url').'?done=打赏积分必须大于0';
+		$url = $redis->get('site_url').'?m=user&a=index&done=打赏积分必须大于0';
 	endif;
 else :
 	$url = $redis->get('site_url').'?done=请先登录';

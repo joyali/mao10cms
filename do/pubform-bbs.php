@@ -22,7 +22,9 @@ if(maoo_user_id()>0) :
 					$term_id = $redis->hget('bbs:'.$id,'term');
 					if($term_id!=$_POST['page']['term']) :
 						$redis->srem('term_bbs_id:'.$term_id,$id);
+                        $redis->zrem('date_term_bbs_id:'.$term_id,$id);
 						$redis->sadd('term_bbs_id:'.$_POST['page']['term'],$id);
+						$redis->zadd('date_term_bbs_id:'.$_POST['page']['term'],strtotime("now"),$id);
 					endif;
 					//更新文章
 					$redis->hmset('bbs:'.$id,$_POST['page']);

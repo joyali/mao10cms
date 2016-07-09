@@ -54,7 +54,7 @@ if(maoo_user_id()>0) :
 			$author = $redis->hget('bbs:'.$pid,'author');
 			$text = '我刚刚评论了帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》：'.$comment['content'];
 			maoo_add_message($user_id,$text);
-			$text = '<a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a>刚刚评论了我的帖子 <a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>：'.$comment['content'];
+			$text = '<a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a>刚刚评论了我的帖子《<a href="'.maoo_url('bbs','single',array('id'=>$pid)).'">'.$redis->hget('bbs:'.$pid,'title').'</a>》：'.$comment['content'];
 			maoo_add_message($author,$text,true);
 		endif;
 		$redis->sadd('comment_id',$id);

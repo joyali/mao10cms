@@ -381,4 +381,31 @@ class Maoo {
 			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
 		}
 	}
+	public function activity(){
+		global $redis;
+		if($_GET['id']>0) {
+			$id = $_GET['id'];
+            $author = $redis->hget('activity:'.$id,'author');
+            $user_id = $redis->hget('activity:'.$id,'author');
+			if($redis->hget('user:'.$author,'del')!=1) {
+				$maoo_title = maoo_cut_str(strip_tags($redis->hget('activity:'.$id,'content')),20).' - 动态 - '.$redis->get('site_name');
+                if($user_id==maoo_user_id()) : 
+                    $who = '我';
+                else :
+                    $who = 'TA';
+                endif;
+                //所有关注的用户
+                $guanzhus = $redis->zrevrange('user_guanzhu:'.$user_id,0,-1);
+				include ROOT_PATH.'/theme/'.maoo_theme().'/user-activity.php';
+			} else {
+				$error = '该用户已被删除';
+				$maoo_title = '错误404 - '.$redis->get('site_name');
+				include ROOT_PATH.'/theme/'.maoo_theme().'/404.php';
+			};
+		} else {
+			$error = '您访问的页面没有找到';
+			$maoo_title = '错误404 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/'.maoo_theme().'/404.php';
+		}
+	}
 }

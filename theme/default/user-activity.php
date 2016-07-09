@@ -57,74 +57,12 @@
         </div>
         <div class="col-md-6 col">
             <div class="panel panel-default panel-timeline">
-                <?php if($user_id==maoo_user_id()) : ?>
                 <div class="panel-heading">
-                    <form id="activityForm" method="post" action="<?php echo $redis->get('site_url'); ?>/do/activity.php">
-                        <div class="input-group">
-                            <input type="text" class="form-control" name="content" placeholder="说点什么吧...">
-                            <span class="pub-imgadd input-group-btn">
-                                <input type="file" class="picfile" onchange="readFile(this)" />
-                                <button class="btn btn-default" type="button">
-                                    <i class="fa fa-camera"></i>
-                                </button>
-                            </span>
-                        </div>
-                        <div id="time-cover-box"></div>
-                        <div class="clearfix"></div>
-                    </form>
-                    <script type="text/javascript">
-                        $(function(){
-                            $("#activityForm").submit(function() {
-                                var text = $('input',this).val();
-                                if(text=='') {
-                                    return false;
-                                };
-                            });
-                        });
-                        function readFile(obj){
-											var file = obj.files[0];
-											//判断类型是不是图片
-											if(!/image\/\w+/.test(file.type)){
-															alert("请确保文件为图像类型");
-															return false;
-											}
-
-											data = new FormData();
-    									data.append("file", file);
-											$.ajax({
-													data: data,
-													type: "POST",
-													url: "<?php echo $redis->get('site_url'); ?>/do/imgupload.php",
-													cache: false,
-													contentType: false,
-        									processData: false,
-													success: function(url) {
-														$('#time-cover-box').append('<div class="cover-img"><div class="img-div" style="background-image:url('+url+');"></div><input type="hidden" name="img[]" value="'+url+'"><div class="close"><i class="fa fa-times-circle"></i></div></div>');
-                                                        $('#time-cover-box .cover-img .close').click(function(){
-                                                    $(this).parent('.cover-img').remove();
-                                                });
-                                                            return;
-													},
-													error : function(data) {
-														alert('上传失败');
-													}
-											});
-							};
-                                                $('#time-cover-box .cover-img .close').click(function(){
-                                                    $(this).parent('.cover-img').remove();
-                                                });
-								</script>
+                    <i class="fa fa-commenting-o"></i> 动态详情
                 </div>
-                <?php else : ?>
-                <div class="panel-heading">
-                    <i class="fa fa-commenting-o"></i> 最新动态
-                </div>
-                <?php endif; ?>
                 <div class="panel-body">
-                    <?php if($db) : ?>
                     <ul class="media-list mb-0">
-                        <?php foreach($db as $page_id) : $author = $redis->hget('activity:'.$page_id,'author'); ?>
-                        <li class="media" id="activity-<?php echo $page_id; ?>">
+                        <li class="media" id="activity-<?php echo $id; ?>">
                             <div class="media-left">
                                 <a class="img-div" href="<?php echo maoo_url('user','index',array('id'=>$author)); ?>">
                                     <img class="media-object" src="<?php echo maoo_user_avatar($author); ?>" alt="<?php echo maoo_user_display_name($author); ?>">
@@ -136,18 +74,18 @@
                                         <?php echo maoo_user_display_name($author); ?>
                                     </a>
                                     <span class="date">
-                                        <?php echo maoo_format_date($redis->hget('activity:'.$page_id,'date')); ?>
+                                        <?php echo maoo_format_date($redis->hget('activity:'.$id,'date')); ?>
                                     </span>
-                                    <?php if($user_id==maoo_user_id() || $redis->hget('user:'.maoo_user_id(),'user_level')==10) : ?>
-                                    <a class="del" href="<?php echo $redis->get('site_url'); ?>/do/delete.php?type=activity&id=<?php echo $page_id; ?>">删除</a>
+                                    <?php if($author==maoo_user_id() || $redis->hget('user:'.maoo_user_id(),'user_level')==10) : ?>
+                                    <a class="del" href="<?php echo $redis->get('site_url'); ?>/do/delete.php?type=activity&id=<?php echo $id; ?>">删除</a>
                                     <?php endif; ?>
                                     <div class="clearfix"></div>
                                 </h4>
                                 <div class="content">
-                                    <?php echo $redis->hget('activity:'.$page_id,'content'); ?>
+                                    <?php echo $redis->hget('activity:'.$id,'content'); ?>
                                 </div>
                                 <?php 
-                                    $imgs = $redis->hget('activity:'.$page_id,'imgs');
+                                    $imgs = $redis->hget('activity:'.$id,'imgs');
                                     if($imgs) :
                                     $imgs = maoo_unserialize($imgs);
                                     $imgscount = count($imgs);
@@ -161,27 +99,26 @@
                                     <div class="clearfix"></div>
                                 </div>
                                 <?php endif; ?>
-                                <?php if($redis->smembers('activity_zan_id:'.$page_id)) : ?>
+                                <?php if($redis->smembers('activity_zan_id:'.$id)) : ?>
                                 <div class="zan-list">
                                     <i class="fa fa-heart-o"></i>
-                                    <?php foreach($redis->smembers('activity_zan_id:'.$page_id) as $zan_user_id) : ?>
+                                    <?php foreach($redis->smembers('activity_zan_id:'.$id) as $zan_user_id) : ?>
                                     <a href="<?php echo maoo_url('user','index',array('id'=>$zan_user_id)); ?>">
                                         <?php echo maoo_user_display_name($zan_user_id); ?>
                                     </a>
                                     <?php endforeach; ?>
                                 </div>
                                 <?php endif; ?>
-                                <div class="comment-list" id="comment-list-<?php echo $page_id; ?>">
-                                    <?php foreach($redis->smembers('activity_comment_id:'.$page_id) as $comment_id) : $comment_user_id = $redis->hget('comment:'.$comment_id,'author'); ?>
+                                <div class="comment-list" id="comment-list-<?php echo $id; ?>">
+                                    <?php foreach($redis->smembers('activity_comment_id:'.$id) as $comment_id) : $comment_user_id = $redis->hget('comment:'.$comment_id,'author'); ?>
                                     <div class="comment-list-item">
                                         <a href="<?php echo maoo_url('user','index',array('id'=>$comment_user_id)); ?>"><?php echo maoo_user_display_name($comment_user_id); ?></a>：<?php echo $redis->hget('comment:'.$comment_id,'content'); ?>
                                     </div>
                                     <?php endforeach; ?>
                                 </div>
                                 <ul class="btn-list list-inline mt-10 mb-0">
-                                    <li><a href="<?php echo maoo_url('user','activity',array('id'=>$page_id)); ?>"><i class="fa fa-hdd-o"></i> 详情</a></li>
-                                    <li><?php echo maoo_zan_btn($page_id); ?></li>
-                                    <li><a href="javascript:commentFrom(<?php echo $page_id; ?>);"><i class="fa fa-commenting-o"></i> 评论</a></li>
+                                    <li><?php echo maoo_zan_btn($id); ?></li>
+                                    <li><a href="javascript:commentFrom(<?php echo $id; ?>);"><i class="fa fa-commenting-o"></i> 评论</a></li>
                                     <li class="ctu">
                                         <a href="javascript:;"><i class="fa fa-plus-square-o"></i> 打赏</a>
                                         <ul class="list-inline mb-0">
@@ -195,7 +132,6 @@
                                 </ul>
                             </div>
                         </li>
-                        <?php endforeach; ?>
                     </ul>
                     <?php echo maoo_pagenavi($count,$page_now,$page_size); ?>
                     <?php echo maoo_zan_js(); ?>
@@ -244,11 +180,6 @@
                             $('ul',this).animate({width:'255px'});
                         });
                     </script>
-                    <?php else : ?>
-                    <div class="nothing">
-                        还没有任何动态
-                    </div>
-                    <?php endif; ?>
                 </div>
             </div>
         </div>

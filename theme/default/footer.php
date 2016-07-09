@@ -23,6 +23,7 @@
     });
 </script>
 <?php include('cart.php'); ?>
+<?php include('activity.php'); ?>
 <div class="mobile-foot-nav visible-xs-block visible-sm-block">
     <a class="mobile-foot-nav-item <?php if($_GET['m']=='' && $_GET['a']=='') echo 'active'; ?>" href="<?php echo $redis->get('site_url'); ?>">
         <i class="fa fa-home"></i>
