@@ -1,6 +1,26 @@
 <?php include('header.php'); ?>
 <div class="container" id="latest">
     <?php echo maoo_ad('post1'); ?>
+    <div class="panel panel-default terms-panel">
+        <div class="panel-body">
+            <div class="terms-title">
+                全部分类：
+            </div>
+            <div class="terms-item-list">
+                <a class="terms-item" href="<?php echo maoo_url('post','latest'); ?>">全部</a>
+                <?php foreach($redis->zrange('term:post',0,-1) as $title) : ?>
+                <a class="terms-item <?php if($id==$redis->zscore('term:post',$title)) echo 'active'; ?>" href="<?php echo maoo_url('post','term',array('id'=>$redis->zscore('term:post',$title))); ?>"><?php echo $title; ?></a>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    </div>
+    <?php if($redis->hget('term:post:'.$id,'content')) : ?>
+    <div class="panel panel-default terms-panel">
+        <div class="panel-body">
+            <?php echo $redis->hget('term:post:'.$id,'content'); ?>
+        </div>
+    </div>
+    <?php endif; ?>
     <div class="row">
 		<div class="col-sm-9 col">
             <div class="post-list">

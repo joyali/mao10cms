@@ -208,3 +208,5 @@ footer a {margin: 0 4px; }
 .admin-order .media .media-heading {font-size: 13px; line-height: 1.5; }
 .admin-order .media .well {border: 0; -webkit-box-shadow: none;  box-shadow: none; margin-bottom: 0; font-size: 13px; }
 .admin-order .media .col-last .well {padding: 5px; }
+
+.post-title .wto {max-width: 300px;}

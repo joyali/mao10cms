@@ -107,7 +107,7 @@ var BbsCommentForm = React.createClass({
         <div className="form-group">
           <textarea rows="5" className="form-control" placeholder="" ref="text"></textarea>
         </div>
-        <button type="submit" className="btn btn-primary">评论</button>
+        <button type="submit" className="btn btn-warning">评论</button>
       </form>
     );
   }

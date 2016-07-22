@@ -252,6 +252,10 @@
 											出售文章《<a href="<?php echo maoo_url('post','single',array('id'=>$coins_message->post_id)); ?>"><?php echo $redis->hget('post:'.$coins_message->post_id,'title'); ?></a>》的隐藏内容
                                         <?php elseif($coins_message->des=='购物抵现') : ?>
                                             购买商品时使用积分抵现，订单号：<?php echo $coins_message->out_trade_no; ?>
+                                        <?php elseif($coins_message->des=='积分竞猜') : ?>
+                                            参加积分竞猜《<a href="<?php echo maoo_url('post','single',array('id'=>$coins_message->post_id)); ?>"><?php echo $redis->hget('post:'.$coins_message->post_id,'title'); ?></a>》，支付积分
+                                        <?php elseif($coins_message->des=='积分竞猜获胜奖励') : ?>
+                                            参加积分竞猜《<a href="<?php echo maoo_url('post','single',array('id'=>$coins_message->post_id)); ?>"><?php echo $redis->hget('post:'.$coins_message->post_id,'title'); ?></a>》，赢得积分
 										<?php endif; ?>
 										=> 积分：<span class="text-<?php if($coins_message->coins>0) : ?>success<?php else : ?>danger<?php endif; ?>"><?php echo $coins_message->coins; ?></span>
 									</li>

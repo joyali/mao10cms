@@ -13,7 +13,7 @@ function maoo_unserialize($txt) {
 //判断程序是否安装
 function maoo_is_install() {
     global $redis;
-    if($redis->get('site_url') && $redis->scard('post_type')>2 && $redis->get('page_size')>0 && $redis->get('fmimg')) :
+    if($redis->get('site_url') && $redis->get('page_size')>0 && $redis->get('fmimg')) :
         return true;
     else :
         return false;

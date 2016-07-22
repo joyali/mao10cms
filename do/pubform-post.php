@@ -4,7 +4,7 @@ if(maoo_user_id()>0) :
 	$user_id = maoo_user_id();
     if($redis->hget('user:'.maoo_user_id(),'user_level')!=10) :
 	foreach($_POST['page'] as $page_key=>$page_val) :
-        $legal_keys = array('title','content','content2','tags','term','fmimg','coins');
+        $legal_keys = array('title','content','content2','tags','term','fmimg','coins','guess');
         if(!in_array($page_key,$legal_keys)) :
             unset($_POST['page'][$page_key]);
         endif;
@@ -19,6 +19,7 @@ if(maoo_user_id()>0) :
 	   $_POST['page']['content'] = maoo_str_replace_base64(maoo_remove_html($_POST['page']['content']));
 	   $_POST['page']['content2'] = maoo_str_replace_base64(maoo_remove_html($_POST['page']['content2']));
     endif;
+    $_POST['page']['guess'] = maoo_serialize($_POST['page']['guess']);
 	if($_POST['page']['content2']) :
 		if($_POST['page']['coins']>0) :
 			//nothing happened

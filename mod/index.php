@@ -58,10 +58,7 @@ class Maoo {
 			$db = $redis->sort('search:'.$type.':'.$s,array('sort'=>'desc','limit'=>array($offset,$page_size)));
 			$maoo_title = '搜索：'.$s.$maoo_title_page.' - '.$redis->get('site_name');
 			include ROOT_PATH.'/theme/'.maoo_theme().'/search.php';
-        elseif(maoo_user_id()) :
-            $url = maoo_url('user','index',array('id'=>maoo_user_id()));
-            echo '<!DOCTYPE html><html lang="zh-CN"><meta http-equiv="refresh" content="0;url='.$url.'"><head><meta charset="utf-8"><title>Mao10CMS</title></head><body></body></html>';
-		else :
+        else :
 			if($redis->get('site_title')) :
 				$maoo_title = $redis->get('site_title');
 			else :

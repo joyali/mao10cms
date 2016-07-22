@@ -32,6 +32,143 @@
 				</div>
 				<div class="panel-body">
                     <?php echo maoo_ad('post4'); ?>
+                    <?php 
+                        $user_coins = maoo_user_coins(maoo_user_id()); 
+                        $guess_args = maoo_unserialize($redis->hget('post:'.$id,'guess'));
+                        if(count($guess_args)>0) :
+                        $guess_end = $redis->hget('post:'.$id,'guess_end');
+                    ?>
+                    <div class="panel-guess mb-20">
+                    <h4 class="title">积分竞猜</h4>
+                    <table class="table table-striped table-bordered">
+                        <thead>
+                            <tr>
+                                <th>竞猜内容</th>
+                                <th>赔率</th>
+                                <th>参与竞猜</th>
+                                <th>投注总积分</th>
+                                <th>可赢总积分</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        <?php foreach($guess_args as $guess_num=>$guess) : if($guess['content'] && $guess['odds']>0 && $guess['total']>=0) : ?>
+                        <?php 
+                            $c1 = 0;
+                            $c2 = 0;
+                            foreach($redis->smembers('post:'.$id.':guess:'.$guess_num) as $gid) :
+                                $coins = $redis->hget('guess:'.$gid,'coins');
+                                $c1 += $coins;
+                                $c2 += $coins*$guess['odds'];
+                            endforeach;
+                        ?>
+                        <tr>
+                            <th scope="row">
+                                <?php echo $guess['content']; ?>
+                            </th>
+                            <td>
+                                1赔<?php echo $guess['odds']; ?>
+                            </td>
+                            <td>
+                                <?php echo $redis->scard('post:'.$id.':guess:'.$guess_num); ?>
+                            </td>
+                            <td>
+                                <?php echo $c1; ?>
+                            </td>
+                            <td>
+                                <?php echo $c2; ?>
+                            </td>
+                            <td>
+                                <?php if($guess_end!=1 && $redis->get('post:'.$id.':guess:'.$guess_num.':t')!=1 && $redis->get('post:'.$id.':guess:'.$guess_num.':t')!=2) : ?>
+                                <a href="#" data-toggle="modal" data-target="#guessModal<?php echo $guess_num; ?>">投注</a>
+                                <?php if($redis->hget('user:'.maoo_user_id(),'user_level')==10) : ?>
+                                <a class="ml-10" href="<?php echo $redis->get('site_url'); ?>/do/guess-end.php?id=<?php echo $id; ?>&g=<?php echo $guess_num; ?>&t=1">成功</a>
+                                <a class="ml-10" href="<?php echo $redis->get('site_url'); ?>/do/guess-end.php?id=<?php echo $id; ?>&g=<?php echo $guess_num; ?>&t=2">失败</a>
+                                <?php endif; ?>
+                                <?php else : ?>
+                                <?php if($redis->get('post:'.$id.':guess:'.$guess_num.':t')==1) : ?>
+                                竞猜成功
+                                <?php else : ?>
+                                竞猜失败
+                                <?php endif; ?>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <?php if($guess_end!=1) : ?>
+                        <div class="modal fade" id="guessModal<?php echo $guess_num; ?>" tabindex="-1" role="dialog">
+                            <div class="modal-dialog" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">
+                                                &times;
+                                            </span>
+                                        </button>
+                                        <h4 class="modal-title">
+                                            竞猜
+                                        </h4>
+                                    </div>
+                                    <form method="post" action="<?php echo $redis->get('site_url'); ?>/do/guess.php">
+                                        <div class="modal-body">
+                                            <p><strong>竞猜内容</strong>：<?php echo $guess['content']; ?></p>
+                                            <p><strong>积分赔率</strong>：1赔<?php echo $guess['odds']; ?></p>
+                                            <p><strong>最高可投注</strong>：<?php echo $guess['total']; ?>积分</p>
+                                            <p><strong>您现有</strong>：<?php echo $user_coins; ?>积分</p>
+                                            <div class="form-group">
+                                                <div class="input-group">
+                                                    <span class="input-group-addon">投注积分</span>
+                                                    <input type="text" class="form-control guessCoins" name="coins" placeholder="请填写大于0的整数" />
+                                                </div>
+                                            </div>
+                                            <p>若竞猜获胜，您将赢得 <span class="sc" data-odds="<?php echo $guess['odds']; ?>" data-total="<?php echo $guess['total']; ?>">0</span> 积分奖励</p>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default" data-dismiss="modal">
+                                                取消
+                                            </button>
+                                            <button type="submit" class="btn btn-warning">
+                                                确认投注
+                                            </button>
+                                        </div>
+                                        <input type="hidden" name="id" value="<?php echo $id; ?>" />
+                                        <input type="hidden" name="g" value="<?php echo $guess_num; ?>" />
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <?php endif; ?>
+                        <?php endif; endforeach; ?>
+                        </tbody>
+                    </table>
+                    <script>
+                        $('.guessCoins').keyup(function(){
+                            var c = $(this).val()*1;
+                            var mb = $(this).parent('.input-group').parent('.form-group').parent('.modal-body');
+                            var odds = $('.sc',mb).attr('data-odds')*1;
+                            var tc = $('.sc',mb).attr('data-total')*1;
+                            var uc = <?php echo $user_coins; ?>;
+                            var mc = 0;
+                            if(tc>uc) {
+                                mc = uc;
+                            } else {
+                                mc = tc;
+                            };
+                            if(c > 0) {
+                                if(c > mc) {
+                                    $(this).val(mc)
+                                    $('.sc',mb).text(odds*mc)
+                                } else {
+                                    $(this).val(c)
+                                    $('.sc',mb).text(odds*c)                
+                                }
+                            } else {
+                                $(this).val(0)
+                                    $('.sc',mb).text(0)
+                            }
+                        })
+                    </script>
+                    </div>
+                    <?php endif; ?>
 					<div class="entry">
 						<?php echo $redis->hget('post:'.$id,'content'); ?>
 					</div>
@@ -169,7 +306,7 @@
             </div>
             <div class="home-side-box side-latest-post">
 				<h4 class="title mt-0 mb-10">
-					最新文章
+					<i class="fa fa-bars"></i> 最新文章
 					<a class="pull-right" href="<?php echo maoo_url('post','latest'); ?>">更多</a>
 				</h4>
 				<ul class="media-list">
@@ -196,7 +333,7 @@
             <?php if($redis->get('promod')!=1) : ?>
 			<div class="home-side-box side-pro-list">
 				<h4 class="title mt-0 mb-10">
-					会员专购
+					<i class="fa fa-bookmark-o"></i> 会员专购
 					<a class="pull-right" href="<?php echo maoo_url('pro'); ?>">更多</a>
 				</h4>
 				<?php

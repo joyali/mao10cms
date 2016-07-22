@@ -29,11 +29,6 @@
             积分
         </a>
     </li>
-    <li role="presentation" class="<?php if($_GET['a']=='cashset') echo 'active'; ?>">
-        <a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=cashset" class="cashset">
-            充值
-        </a>
-    </li>
     <li role="presentation" class="<?php if($_GET['a']=='pay') echo 'active'; ?>">
         <a href="<?php echo $redis->get('site_url'); ?>?m=admin&a=pay" class="pay">
             支付

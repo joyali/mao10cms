@@ -2,7 +2,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col-sm-10 col-sm-offset-1 col">
-			<form method="post" role="form" action="<?php echo $redis->get('site_url'); ?>/do/pubform-post.php">
+			<form class="publish-post-page" method="post" role="form" action="<?php echo $redis->get('site_url'); ?>/do/pubform-post.php">
 					<div class="tab-content">
 						<div role="tabpanel" class="tab-pane active" id="publish-step-1">
 							<div class="form-group">
@@ -100,6 +100,7 @@
 								<input type="text" name="page[rank]" class="form-control" value="<?php if($id) : echo $redis->hget('post:'.$id,'rank');  endif; ?>">
 							</div>
                             <?php endif; ?>
+                            <h4 class="title">隐藏内容</h4>
 							<div class="form-group">
 								<label>
 									隐藏内容 需支付给你一定积分才可以查看
@@ -113,6 +114,48 @@
 								</label>
 								<input type="text" name="page[coins]" class="form-control" value="<?php if($id) : echo $redis->hget('post:'.$id,'coins'); endif; ?>">
 							</div>
+                            <?php if($redis->hget('user:'.maoo_user_id(),'user_level')==10) : ?>
+                            <h4 class="title">
+                                积分竞猜
+                            </h4>
+                            <div class="form-group">
+								<div class="guess-box">
+                                    <?php if($id) : $guess_args = maoo_unserialize($redis->hget('post:'.$id,'guess')); endif; ?>
+                                    <?php $guess_nums = array(1,2,3,4,5,6,7,8); foreach($guess_nums as $guess_num) : ?>
+                                    <div class="row mb-10">
+                                        <div class="col-xs-5 col">
+                                            <input type="text" name="page[guess][<?php echo $guess_num; ?>][content]" class="tit form-control" placeholder="竞猜内容，例如：平局" value="<?php echo $guess_args[$guess_num]['content']; ?>" />
+                                        </div>
+                                        <div class="col-xs-4 col">
+                                            <input type="text" name="page[guess][<?php echo $guess_num; ?>][odds]" class="odds form-control" placeholder="赔率，填写2，赔率就为1赔2" value="<?php echo $guess_args[$guess_num]['odds']; ?>" />
+                                        </div>
+                                        <div class="col-xs-3 col">
+                                            <input type="text" name="page[guess][<?php echo $guess_num; ?>][total]" class="total form-control" placeholder="最高竞猜金额（积分）" value="<?php echo $guess_args[$guess_num]['total']; ?>" />
+                                        </div>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                <script>
+                                    $('.guess-box input').blur(function(){
+                                        var pt = 0
+                                        for(var i=0; i<8; i++) {
+                                            var row = $('.guess-box .row:eq('+i+')')
+                                            var tit = $('.tit',row).val()
+                                            var odds = $('.odds',row).val()*1
+                                            var total = $('.total',row).val()*1
+                                            if(tit && odds>0 && total>0) {
+                                                var p = total*(odds-1)
+                                            } else {
+                                                var p = 0   
+                                            }
+                                            pt += p
+                                        }
+                                        $('.bzj').text(pt)
+                                    })
+                                </script>
+                                <p class="help-block">此次竞猜如果全部失败，最高需赔付 <span class="bzj">0</span> 积分。</p>
+							</div>
+                            <?php endif; ?>
 							<div class="submit-btn-hidden" style="display:none">
 								<button type="button" class="btn btn-block btn-default">正在提交...</button>
 							</div>
@@ -138,7 +181,7 @@
 									</button>
 								</div>
 								<div class="col-xs-6 col">
-									<button type="submit" class="btn btn-block btn-primary" id="publish-btn-submit">
+									<button type="submit" class="btn btn-block btn-warning" id="publish-btn-submit">
 										发布文章
 									</button>
 								</div>
