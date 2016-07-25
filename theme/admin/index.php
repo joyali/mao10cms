@@ -5,7 +5,7 @@
 			<?php include('side.php'); ?>
 		</div>
 		<div class="col-sm-9 col admin-body">
-			<?php $version = '20160215'; $new_version = file_get_contents('http://www.mao10.com/version.txt'); if($new_version>$version) : ?>
+			<?php $version = '20160722'; $new_version = file_get_contents('http://www.mao10.com/version.txt'); if($new_version>$version) : ?>
 			<div class="well">
 				<h3 class="mt-0">发现新版本</h3>
 				<div class="mb-10"><?php echo file_get_contents('http://www.mao10.com/update.txt'); ?></div>

@@ -35,7 +35,13 @@
                     <?php 
                         $user_coins = maoo_user_coins(maoo_user_id()); 
                         $guess_args = maoo_unserialize($redis->hget('post:'.$id,'guess'));
-                        if(count($guess_args)>0) :
+                        $gnum = 0;
+                        foreach($guess_args as $guess_num=>$guess) :
+                        if($guess['content'] && $guess['odds']>0 && $guess['total']>=0) :
+                            $gnum++;
+                        endif;
+                        endforeach;
+                        if($gnum>0) :
                         $guess_end = $redis->hget('post:'.$id,'guess_end');
                     ?>
                     <div class="panel-guess mb-20">

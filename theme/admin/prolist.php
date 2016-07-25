@@ -27,7 +27,7 @@
         endif;
         $offset = ($page_now-1)*$page_size;
         $count = $redis->zcard('pro_id');
-        $db = $redis->sort('pro_id',array('sort'=>'desc','limit'=>array($offset,$page_size)));
+        $db = $redis->zrevrange('pro_id',$offset,$offset+$page_size-1);
 					?>
 					<?php foreach($db as $id) : ?>
 					<tr id="maoo-post-id-<?php echo $id; ?>">
