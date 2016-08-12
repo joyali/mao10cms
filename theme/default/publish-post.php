@@ -11,10 +11,30 @@
 								</label>
 								<input id="pub-title" type="text" name="page[title]" class="form-control" value="<?php if($id) : echo $redis->hget('post:'.$id,'title'); else : echo $redis->hget('user_draft_post:'.$user_id,'title'); endif; ?>">
 							</div>
-							<div class="form-group">
-								<label>
-									分类
+							<div class="form-group term-form-group">
+								<label class="pull-left">
+									话题
 								</label>
+                                <?php 
+                                    if($redis->hget('user:'.$user_id,'user_level')==10) :
+                                        $pubcan = 1;
+                                    else :
+                                        if($redis->get('topic_permission')!=2) :
+                                            if($redis->get('topic_number')>0) :
+                                                if($redis->scard('user_topic_id:'.$user_id)<$redis->get('topic_number')) :
+                                                    $pubcan = 1;
+                                                endif;
+                                            else : 
+                                                $pubcan = 1;
+                                            endif;
+                                        endif;
+                                    endif;
+                                    if($pubcan==1) :
+                                ?>
+                                <a class="pull-right" href="#" data-toggle="modal" data-target="#addTermModal">
+                                    <i class="fa fa-plus-square-o"></i> 创建话题
+                                </a>
+                                <?php endif; ?>
 								<div class="clearfix"></div>
 								<?php foreach($redis->zrange('term:post',0,-1) as $title) : ?>
 								<label class="radio-inline">
@@ -364,4 +384,36 @@
 			$('.submit-btn-hidden').css('display','block');
 		});
 	</script>
+<div class="modal fade" id="addTermModal" tabindex="-1" role="dialog">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                                <h4 class="modal-title">创建话题</h4>
+                                            </div>
+                                            <form method="post" action="<?php echo $redis->get('site_url'); ?>/do/pubform-topic.php">
+                                                <div class="modal-body">
+                                                    <div class="form-group">
+                                                        <label>
+                                                            话题名称
+                                                        </label>
+                                                        <input type="text" name="page[title]" class="form-control" value="">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label>
+                                                            介绍
+                                                        </label>
+                                                        <textarea name="page[content]" rows="5" class="form-control"></textarea>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                                                    <button type="submit" class="btn btn-warning">创建话题</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
 <?php include('footer.php'); ?>

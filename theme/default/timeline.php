@@ -35,7 +35,7 @@
 				</h4>
 				<ul class="media-list">
 					<?php $myposts = $redis->sort('user_post_id:'.$user_id,array('sort'=>'desc','limit'=>array(0,5))); ?>
-					<?php foreach($myposts as $page_id) : ?>
+					<?php foreach($myposts as $page_id) : if($redis->hget('post:'.$page_id,'title')) : ?>
 					<li class="media">
 						<div class="media-left">
 							<a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
@@ -51,9 +51,42 @@
 							</div>
 						</div>
 					</li>
+                    <?php elseif($redis->hget('post:'.$page_id,'pro')>0) : $pro_id = $redis->hget('post:'.$page_id,'pro'); $cover_images = unserialize($redis->hget('pro:'.$pro_id,'cover_image'));  ?>
+                    <li class="media">
+						<div class="media-left">
+							<a class="wto" href="<?php echo maoo_url('pro','single',array('id'=>$pro_id)); ?>">
+								<img class="media-object" src="<?php echo $cover_images[1]; ?>" alt="<?php echo $redis->hget('pro:'.$pro_id,'title'); ?>">
+							</a>
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading">
+								<a href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>"><?php echo $redis->hget('pro:'.$pro_id,'title'); ?></a>
+							</h4>
+							<div class="excerpt">
+								<?php echo maoo_cut_str(strip_tags($redis->hget('pro:'.$pro_id,'content')),21); ?>
+							</div>
+						</div>
+					</li>
+                    <?php endif; ?>
 					<?php endforeach; ?>
 				</ul>
 			</div>
+            <?php $terms = $redis->smembers('user_post_term_id:'.$user_id); if($terms) : ?>
+            <div class="home-side-box side-latest-term">
+				<h4 class="title mt-0 mb-10">
+					<i class="fa fa-bars"></i> <?php echo $who; ?>的话题
+					<a class="pull-right" href="javascript:;">共 <?php echo count($terms); ?> 个</a>
+				</h4>
+				<div class="list-group">
+                    <?php foreach($terms as $term_id) : ?>
+                    <a class="list-group-item" href="<?php echo maoo_url('post','term',array('id'=>$term_id)); ?>">
+                        <div class="title wto"><?php echo $redis->hget('term:post:'.$term_id,'title'); ?></div> <span>共有<?php echo $redis->scard('term_post_involvement:'.$term_id); ?>人参与</span>
+                        <div class="clearfix"></div>
+                    </a>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+            <?php endif; ?>
         </div>
         <div class="col-md-6 col">
             <div class="panel panel-default panel-timeline">

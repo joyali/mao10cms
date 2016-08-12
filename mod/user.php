@@ -360,6 +360,11 @@ class Maoo {
                 $cash = $_POST['cash'];
                 $maoo_title = '账户充值 - '.$redis->get('site_name');
                 include ROOT_PATH.'/theme/'.maoo_theme().'/user-recharge.php';
+            elseif($_GET['mustpay']>0) :
+                $user_id = maoo_user_id();
+                $cash = $_GET['mustpay'];
+                $maoo_title = '支付订单 - '.$redis->get('site_name');
+                include ROOT_PATH.'/theme/'.maoo_theme().'/user-mustpay.php';
             else :
                 $error = '充值金额必须大于0';
 				$maoo_title = '错误404 - '.$redis->get('site_name');

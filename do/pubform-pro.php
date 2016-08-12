@@ -45,6 +45,16 @@ if(maoo_user_id()>0 && $redis->hget('user:'.maoo_user_id(),'user_level')>7) :
                         $redis->zadd('term_pro_id:'.$parent_new,$inlist,$id);
                     endif;
 				endif;
+                if($_POST['page']['post_term']>0 && $_POST['page']['post_term']!=$redis->hget('pro:'.$id,'post_term')) :
+                    $postid = $redis->hget('pro:'.$id,'post');
+                    $redis->srem('term_post_id:'.$redis->hget('pro:'.$id,'post_term'),$postid);
+                        $redis->sadd('term_post_id:'.$_POST['page']['post_term'],$postid);
+                        if($_POST['page']['rank']>0) :
+                        else :
+                            $_POST['page']['rank'] = $redis->hget('pro:'.$id,'date');
+                        endif;
+                        $redis->zadd('rank_list',$_POST['page']['rank'],$postid);
+                    endif;
 				//更新文章
 				$redis->hmset('pro:'.$id,$_POST['page']);
 				$url = $redis->get('site_url').'?m=pro&a=single&done=编辑成功&id='.$id;
@@ -63,6 +73,7 @@ if(maoo_user_id()>0 && $redis->hget('user:'.maoo_user_id(),'user_level')>7) :
 				$_POST['page']['min_price'] = min($price_array);
 
 				//格式化初始数据
+                $_POST['page']['author'] = maoo_user_id();
 				$_POST['page']['sales_volume'] = 0;
 				$_POST['page']['collection'] = 0;
 				$_POST['page']['rank'] = 0;
@@ -86,6 +97,21 @@ if(maoo_user_id()>0 && $redis->hget('user:'.maoo_user_id(),'user_level')>7) :
                     if($parent>0) :
                         $redis->zadd('term_pro_id:'.$parent,$inlist,$id);
                     endif;
+                    if($_POST['page']['post_term']>0) :
+                        $postid = $redis->incr('post_id_incr');
+                        $_POST['page']['post'] = $postid;
+                        $redis->sadd('term_post_id:'.$_POST['page']['post_term'],$postid);
+                        $redis->sadd('post_id',$postid);
+                        $redis->sadd('user_post_id:'.maoo_user_id(),$postid);
+                        if($_POST['page']['rank']>0) :
+                        else :
+                            $_POST['page']['rank'] = $_POST['page']['date'];
+                        endif;
+                        $redis->hset('post:'.$postid,'pro',$id);
+                        $redis->zadd('rank_list',$_POST['page']['rank'],$postid);
+                    endif;
+                    $text = '我分享了商品《<a href="'.maoo_url('pro','single',array('id'=>$id)).'">'.$_POST['page']['title'].'</a>》';
+                    maoo_add_message($user_id,$text);
 					$redis->hmset('pro:'.$id,$_POST['page']);
 					$url = $redis->get('site_url').'?m=pro&a=single&done=发布成功&id='.$id;
 				else :

@@ -2,7 +2,7 @@
 require 'functions.php';
 if($redis->hget('user:'.maoo_user_id(),'user_level')==10) :
 	if($_GET['id']>0) :
-		$types = $redis->smembers('post_type');
+		$types = array('post','bbs','pro','deal');
 		if(in_array($_GET['type'],$types)) :
 			$id = $_GET['id'];
 			$type = $_GET['type'];

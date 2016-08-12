@@ -38,7 +38,7 @@ footer,
 						<h2 class="title">账号登录</h2>
 					</div>
 					<div class="form-group">
-						<div class="input-group input-group-lg">
+						<div class="input-group input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-user"></i>
 							</span>
@@ -47,7 +47,7 @@ footer,
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="input-group input-group-lg">
+						<div class="input-group input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-lock"></i>
 							</span>

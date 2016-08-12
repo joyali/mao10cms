@@ -13,10 +13,10 @@ if($verify_result) {//验证成功
 	//——请根据您的业务逻辑来编写程序（以下代码仅作参考）——
     //获取支付宝的通知返回参数，可参考技术文档中页面跳转同步通知参数列表
 
-	//商户订单号
+	//商户订单号
 	$out_trade_no = $_GET['out_trade_no'];
 
-	//支付宝交易号
+	//支付宝交易号
 	$trade_no = $_GET['trade_no'];
 
 	//交易状态
@@ -33,8 +33,12 @@ if($verify_result) {//验证成功
     else {
       echo "trade_status=".$_GET['trade_status'];
     }
-
-	$url = maoo_url('user','cash',array('done'=>'支付成功'));
+    if($_SESSION['mustpay']>0) :
+	   $url = maoo_url('pro','checkout',array('done'=>'充值成功，请完成您的订单支付'));
+        $_SESSION['mustpay'] = 0;
+    else :
+        $url = maoo_url('user','cash',array('done'=>'支付成功'));
+    endif;
 
 	//——请根据您的业务逻辑来编写程序（以上代码仅作参考）——
 

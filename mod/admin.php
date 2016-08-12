@@ -265,6 +265,9 @@ class Maoo {
 	public function publishpro(){
 		global $redis;
 		if($redis->hget('user:'.maoo_user_id(),'user_level')==10) {
+            if($_GET['id']>0) {
+                $id = $_GET['id'];
+            };
 			$maoo_title = '发布商品 - '.$redis->get('site_name');
 			include ROOT_PATH.'/theme/admin/publish-pro.php';
 		} else {

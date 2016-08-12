@@ -5,7 +5,7 @@
 				</h4>
 				<ul class="media-list">
 					<?php $db = $redis->sort('post_id',array('sort'=>'desc','limit'=>array(0,5))); ?>
-					<?php foreach($db as $page_id) : ?>
+					<?php foreach($db as $page_id) :  if($redis->hget('post:'.$page_id,'title')) : ?>
 					<li class="media">
 						<div class="media-left">
 							<a class="wto" href="<?php echo maoo_url('post','single',array('id'=>$page_id)); ?>">
@@ -21,6 +21,23 @@
 							</div>
 						</div>
 					</li>
+                    <?php elseif($redis->hget('post:'.$page_id,'pro')>0) : $pro_id = $redis->hget('post:'.$page_id,'pro'); $cover_images = unserialize($redis->hget('pro:'.$pro_id,'cover_image'));  ?>
+                    <li class="media">
+						<div class="media-left">
+							<a class="wto" href="<?php echo maoo_url('pro','single',array('id'=>$pro_id)); ?>">
+								<img class="media-object" src="<?php echo $cover_images[1]; ?>" alt="<?php echo $redis->hget('pro:'.$pro_id,'title'); ?>">
+							</a>
+						</div>
+						<div class="media-body">
+							<h4 class="media-heading">
+								<a href="<?php echo maoo_url('pro','single',array('id'=>$page_id)); ?>"><?php echo $redis->hget('pro:'.$pro_id,'title'); ?></a>
+							</h4>
+							<div class="excerpt">
+								<?php echo maoo_cut_str(strip_tags($redis->hget('pro:'.$pro_id,'content')),21); ?>
+							</div>
+						</div>
+					</li>
+                    <?php endif; ?>
 					<?php endforeach; ?>
 				</ul>
 			</div>

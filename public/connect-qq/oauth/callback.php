@@ -19,10 +19,10 @@ else :
 		$_SESSION['user_name'] = $redis->hget('user:'.$user_id,'user_name');
 		$_SESSION['user_pass'] = $redis->hget('user:'.$user_id,'user_pass');
 		$user_level = $redis->hget('user:'.$user_id,'user_level');
-		$url = $redis->get('site_url').'?m=user&a=index&id='.$user_id.'&done=使用QQ账号'.$uinfo["nickname"].'成功';
+		$url = $redis->get('site_url').'?m=user&a=index&id='.$user_id.'&done=使用QQ账号授权成功&nickname='.$uinfo["nickname"];
 	else :
 		$_SESSION['connect_qq'] = $oid;
-		$url = maoo_url('user','register',array('done'=>'使用QQ账号'.$uinfo["nickname"].'注册本站账号并绑定','noreferer'=>'yes'));
+		$url = maoo_url('user','register',array('done'=>'使用QQ账号注册本站账号并绑定','nickname'=>$uinfo["nickname"],'noreferer'=>'yes'));
 	endif;
 endif;
 Header("Location:$url");

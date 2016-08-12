@@ -13,8 +13,6 @@
 <link href="<?php echo $redis->get('site_url'); ?>/theme/default/style.css" rel="stylesheet">
 <link href="<?php echo $redis->get('site_url'); ?>/theme/default/media.css" rel="stylesheet">
 <script src="<?php echo $redis->get('site_url'); ?>/public/js/jquery.min.js"></script>
-<script src="<?php echo $redis->get('site_url'); ?>/public/js/react.min.js"></script>
-<script src="<?php echo $redis->get('site_url'); ?>/public/js/JSXTransformer.js"></script>
 <script src="<?php echo $redis->get('site_url'); ?>/public/js/bootstrap.min.js"></script>
 <!--[if lt IE 9]>
 	<script src="<?php echo $redis->get('site_url'); ?>/public/js/html5shiv.min.js"></script>
@@ -38,16 +36,16 @@ footer,
 						<h2 class="title">注册账号</h2>
 					</div>
 					<div class="form-group">
-						<div class="input-group input-group-lg">
+						<div class="input-group input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-user"></i>
 							</span>
 							<input class="hidden">
-							<input type="text" name="user_name" class="form-control" placeholder="用户名">
+							<input type="text" name="user_name" class="form-control" placeholder="用户名" value="<?php echo $_GET['nickname']; ?>">
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="input-group input-group-lg">
+						<div class="input-group input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-lock"></i>
 							</span>
@@ -55,7 +53,7 @@ footer,
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="input-group input-group-lg">
+						<div class="input-group input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-question-sign"></i>
 							</span>
@@ -70,13 +68,27 @@ footer,
 						</div>
 					</div>
 					<div class="form-group">
-						<div class="input-group input-group-lg">
+						<div class="input-group input-group">
 							<span class="input-group-addon">
 								<i class="glyphicon glyphicon-text-background"></i>
 							</span>
 							<input type="text" name="user_answer" class="form-control" placeholder="答案">
 						</div>
 						<p class="help-block">请认真填写，这将是你找回密码的唯一途径！</p>
+					</div>
+                    <?php 
+                        $num1 = rand(1,50);
+                        $num2 = rand(1,50);
+                        $_SESSION['vnum'] = $num1+$num2;
+                    ?>
+					<div class="form-group">
+						<div class="input-group input-group">
+							<span class="input-group-addon">
+								<i class="glyphicon glyphicon-console"></i>
+							</span>
+							<input type="text" name="vnum" class="form-control" placeholder="验证问题">
+						</div>
+						<p class="help-block">请填写阿拉伯数字：<?php echo ch_num($num1); ?> 加 <?php echo ch_num($num2); ?> 等于几？ </p>
 					</div>
 					<button type="submit" class="btn btn-block btn-default btn-lg">
 						提交

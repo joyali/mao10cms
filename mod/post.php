@@ -55,6 +55,16 @@ class Maoo {
 			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
 		}
 	}
+	public function publishtopic(){
+		global $redis;
+		if(maoo_user_id()) {
+			$maoo_title = '发起话题 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/'.maoo_theme().'/publish-topic.php';
+		} else {
+			$maoo_title = '用户登录 - '.$redis->get('site_name');
+			include ROOT_PATH.'/theme/'.maoo_theme().'/login.php';
+		}
+	}
 	public function single(){
 		global $redis;
 		if($_GET['id']>0) {
@@ -64,18 +74,12 @@ class Maoo {
 				$error = '该文章已被删除';
 				$maoo_title = '错误404 - '.$redis->get('site_name');
 				include ROOT_PATH.'/theme/'.maoo_theme().'/404.php';
-			} elseif($redis->hget('post:'.$id,'permission')==3) {
-				if($author==maoo_user_id() || $redis->hget('topic:'.$redis->hget('post:'.$id,'topic'),'author')==maoo_user_id() || $redis->hget('user:'.maoo_user_id(),'user_level')==10) {
-					$maoo_title = $redis->hget('post:'.$id,'title').' - 待审核 - '.$redis->get('site_name');
-					include ROOT_PATH.'/theme/'.maoo_theme().'/post-single.php';
-				} else {
-					$error = '该文章正在审核中';
-					$maoo_title = '错误404 - '.$redis->get('site_name');
-					include ROOT_PATH.'/theme/'.maoo_theme().'/404.php';
-				}
 			} else {
 				$maoo_title = $redis->hget('post:'.$id,'title').' - '.$redis->get('site_name');
 				maoo_set_views($id);
+                if(maoo_user_id() && $redis->hget('post:'.$id,'term')>0) :
+                    $redis->sadd('term_post_involvement:'.$redis->hget('post:'.$id,'term'),maoo_user_id());
+                endif;
 				include ROOT_PATH.'/theme/'.maoo_theme().'/post-single.php';
 			}
 		} else {
@@ -83,6 +87,13 @@ class Maoo {
 			$maoo_title = '错误404 - '.$redis->get('site_name');
 			include ROOT_PATH.'/theme/'.maoo_theme().'/404.php';
 		}
+	}
+	public function pubtopic(){
+		global $redis;
+		if($_GET['id']>0) {
+			$id = $_GET['id'];
+        };
+		include ROOT_PATH.'/theme/'.maoo_theme().'/publish-topic.php';
 	}
 	public function term(){
 		global $redis;
@@ -103,6 +114,9 @@ class Maoo {
         endif;
         $offset = ($page_now-1)*$page_size;
         $db = $redis->sort('term_post_id:'.$id,array('sort'=>'desc','limit' =>array($offset,$offset+$page_size-1)));
+        if(maoo_user_id()) :
+            $redis->sadd('term_post_involvement:'.$id,maoo_user_id());
+        endif;
 		include ROOT_PATH.'/theme/'.maoo_theme().'/post-term.php';
 	}
 	public function tag(){

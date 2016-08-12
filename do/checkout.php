@@ -1,6 +1,8 @@
 <?php
 require 'functions.php';
 if(maoo_user_id()) :
+    $_SESSION['checkout_reffer'] = $_POST['reffer'];
+    $_SESSION['checkout_coins'] = $_POST['coins'];
 	$user_id = maoo_user_id();
 	$carts = $redis->smembers('cart:user:1:'.$user_id);
 	if($carts) :
@@ -9,7 +11,7 @@ if(maoo_user_id()) :
 		endforeach;
 	endif;
 	$total = $cart_price+$redis->get('express');
-
+    if($total>0) :
         $code = str_replace('REF','',$_POST['reffer']);
         if($code>0 && $redis->hget('user:'.$code,'user_name')!='' && $code!=maoo_user_id() && strstr($_POST['reffer'],'REF')) :
             $total = $total/100*90;
@@ -78,9 +80,13 @@ if(maoo_user_id()) :
                     $coinsobj->date = strtotime("now");
                     $redis->lpush('coins:user:'.$user_id,serialize($coinsobj));
                 endif;
+                $_SESSION['checkout_reffer'] = null;
+                $_SESSION['checkout_coins'] = null;
                 $url = $redis->get('site_url').'?m=user&a=order&done=支付成功';
             else :
-                $url = $redis->get('site_url').'?m=user&a=cash&done=账户余额不足，请先充值';
+                $mustpay = $total-maoo_user_cash($user_id);
+                $_SESSION['mustpay'] = $mustpay;
+                $url = $redis->get('site_url').'?m=user&a=recharge&mustpay='.$mustpay;
             endif;
         elseif($_POST['coins']>maoo_user_coins($user_id)) :
             $url = $redis->get('site_url').'?m=pro&a=checkout&done=使用的积分不能超过您拥有的积分';
@@ -89,7 +95,9 @@ if(maoo_user_id()) :
         else :
             $url = $redis->get('site_url').'?m=pro&a=checkout&done=积分格式有误';
         endif;
-	
+	else :
+        $url = $redis->get('site_url').'?m=pro&a=checkout&done=商品参数错误';
+    endif;
 else :
 	$url = $redis->get('site_url').'?m=user&a=login&done=请先登录';
 endif;

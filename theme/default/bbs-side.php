@@ -2,7 +2,7 @@
 			<script type="text/jsx" src="<?php echo $redis->get('site_url'); ?>/theme/default/react/chat.js"></script>
 			<script type="text/jsx">
 			React.render(
-				<ChatBox url="<?php echo $redis->get('site_url'); ?>/do/chat.php" pollInterval={5000} />,
+				<ChatBox url="<?php echo $redis->get('site_url'); ?>/do/chat.php" pollInterval={1000} />,
 				document.getElementById('react-chat-box')
 			);
 			</script>

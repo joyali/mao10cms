@@ -27,6 +27,7 @@ if($verify_result) {//验证成功
 	$total_fee = $_POST['total_fee'];
 	$user_id = round($out_trade_no/1000000000000000000,0);
 
+    $go = false;
 
     if($_POST['trade_status'] == 'TRADE_FINISHED') {
         $cashs = $redis->smembers('cash:user_id:'.$user_id);

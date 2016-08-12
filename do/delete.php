@@ -139,6 +139,14 @@ if($_GET['id']>0 && $_GET['type']) :
                 if($parent>0) :
                     $redis->zrem('term_pro_id:'.$parent,$id);
                 endif;
+                $postid = $redis->hget('pro:'.$id,'post');
+                if($postid>0) :
+                    $redis->srem('term_post_id:'.$redis->hget('pro:'.$id,'post_term'),$postid);
+                    $redis->srem('post_id',$postid);
+                    $redis->srem('user_post_id:'.$redis->hget('pro:'.$id,'author'),$postid);
+                    $redis->zrem('rank_list',$postid);
+                    $redis->del('post:'.$postid);
+                endif;
 				$redis->hset('pro:'.$id,'del',1);
 				$url = $redis->get('site_url').'?m=pro&a=index&done=商品删除成功';
 			else :

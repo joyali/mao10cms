@@ -24,6 +24,11 @@
 					</li>
 					<li role="presentation">
 						<a href="#editpro-3" aria-controls="editpro-3" role="tab" data-toggle="tab">
+							文章推送
+						</a>
+					</li>
+					<li role="presentation">
+						<a href="#editpro-4" aria-controls="editpro-4" role="tab" data-toggle="tab">
 							杂项
 						</a>
 					</li>
@@ -189,6 +194,29 @@
 						</div-->
 					</div>
 					<div role="tabpanel" class="tab-pane" id="editpro-3">
+						<div class="form-group">
+							<label>
+								推送到文章列表
+							</label>
+							<select name="page[post_term]" class="form-control">
+								<option>
+									选择分类...
+								</option>
+								<?php foreach($redis->zrange('term:post',0,-1) as $title) : $term_id = $redis->zscore('term:post',$title); ?>
+								<option value="<?php echo $term_id; ?>" <?php if($redis->hget('pro:'.$id,'post_term')==$term_id) echo 'selected'; ?>>
+									<?php echo $title; ?>
+								</option>
+								<?php endforeach; ?>
+							</select>
+						</div>
+						<div class="form-group">
+							<label>
+								评级 数值越高排名越靠前
+							</label>
+							<input type="text" name="page[rank]" class="form-control" value="<?php if($id) : echo $redis->hget('pro:'.$id,'rank');  endif; ?>">
+						</div>
+					</div>
+					<div role="tabpanel" class="tab-pane" id="editpro-4">
 						<div class="form-group">
 							<label>
 								SEO - 商品关键词

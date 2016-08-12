@@ -58,7 +58,7 @@
                                     <span class="input-group-addon">
                                         使用积分
                                     </span>
-                                    <input onkeyup="value=value.replace(/[^0-9]/g,'')" onpaste="value=value.replace(/[^0-9]/g,'')" oncontextmenu = "value=value.replace(/[^0-9]/g,'')" type="text" name="coins" id="payCoinsInput" class="form-control" placeholder="您共有<?php echo maoo_user_coins($user_id); ?>积分" />
+                                    <input onkeyup="value=value.replace(/[^0-9]/g,'')" onpaste="value=value.replace(/[^0-9]/g,'')" oncontextmenu = "value=value.replace(/[^0-9]/g,'')" type="text" name="coins" id="payCoinsInput" class="form-control"  value="<?php echo $_SESSION['checkout_coins']; ?>" placeholder="您共有<?php echo maoo_user_coins($user_id); ?>积分" />
                                 </div>
                             </div>
                             <p>
@@ -95,6 +95,28 @@
                                         $('#coinsToCash').css('display','none');
                                     }
                                 });
+                                $(document).ready(function(){
+                                    var coins = $('#payCoinsInput').val()*1;
+                                    if(coins>0) {
+                                        $('#coinsToCash').css('display','block');
+                                        if(coins><?php echo $total*maoo_cash_to_coins(); ?>) {
+                                           $('#payCoinsInput').val(<?php echo $total*maoo_cash_to_coins(); ?>);
+                                           $('#coinsToCash span').text(<?php echo $total; ?>);
+                                            $('#realPay').text(0);
+                                        } else {
+                                            var cash = <?php echo $total; ?>;
+                                            var newCoinsToCash = coins/<?php echo maoo_cash_to_coins(); ?>;
+                                            var nctc = newCoinsToCash.toFixed(2)*1;
+                                            var newRealPay = cash-nctc;
+                                            $('#coinsToCash span').text(nctc);
+                                            $('#realPay').text(newRealPay.toFixed(2));
+                                        }
+                                    } else {
+                                        $('#realPay').text(<?php echo $total; ?>);
+                                        $('#coinsToCash span').text(0);
+                                        $('#coinsToCash').css('display','none');
+                                    }
+                                });
                             </script>
                         </div>
                         <div class="well">
@@ -103,7 +125,7 @@
                                     <span class="input-group-addon">
                                         推荐码
                                     </span>
-                                    <input type="text" name="reffer" id="payRefferInput" class="form-control" placeholder="输入有效的推荐码可以获得10%的折扣" />
+                                    <input type="text" name="reffer" id="payRefferInput" class="form-control" placeholder="输入有效的推荐码可以获得10%的折扣" value="<?php echo $_SESSION['checkout_reffer']; ?>" />
                                 </div>
                                 <p id="payRefferText" class="help-block"></p>
                             </div>
@@ -128,8 +150,7 @@
                         </div>
                         <?php $recharge = $total-maoo_user_cash($user_id); if($recharge>0) : ?>
                         <div class="well">
-                            <p>您当前的账户余额为：<?php echo maoo_user_cash(maoo_user_id()); ?>元，还需充值<span id="recharge"><?php echo $recharge; ?></span>元</p>
-                            <a class="btn btn-danger" target="_blank" href="<?php echo maoo_url('user','cash',array('cash'=>$recharge)); ?>#ucash1">立即充值</a>
+                            <p>您当前的账户余额为：<?php echo maoo_user_cash(maoo_user_id()); ?>元，还需支付<span id="recharge"><?php echo $recharge; ?></span>元</p>
                         </div>
                         <?php endif; ?>
 					</div>

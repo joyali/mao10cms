@@ -71,15 +71,20 @@
 					</li>
 					<li>
 						<a href="<?php echo maoo_url('post','publish'); ?>">
-							<i class="glyphicon glyphicon-edit"></i>
+							发布文章
 						</a>
 					</li>
 					<?php if(maoo_user_id()) : ?>
+                    <?php 
+                        $carts_count = $redis->scard('cart:user:1:'.maoo_user_id());
+                        if($carts_count>0) : 
+                    ?>
 					<li class="cart">
 						<a href="#" data-toggle="modal" data-target="#cartModal">
 		                  <i class="glyphicon glyphicon-shopping-cart"></i>
 						</a>
 					</li>
+                    <?php endif; ?>
 					<li class="user">
 						<img src="<?php echo maoo_user_avatar(maoo_user_id()); ?>" alt="<?php echo maoo_user_display_name(maoo_user_id()); ?>">
 						<ul class="dropdown-menu" role="menu">

@@ -109,7 +109,7 @@ if(maoo_user_id()>0) :
                             if($_POST['page']['rank']>0) :
                                 
                             else :
-                                $_POST['page']['rank'] = $redis->hget('post:'.$id,'date');
+                                $_POST['page']['rank'] = $_POST['page']['date'];
                             endif;
 							$redis->zadd('rank_list',$_POST['page']['rank'],$id);
 							$redis->hmset('post:'.$id,$_POST['page']);
@@ -118,6 +118,11 @@ if(maoo_user_id()>0) :
 							//消息
 							$text = '我发表了文章《<a href="'.maoo_url('post','single',array('id'=>$id)).'">'.$redis->hget('post:'.$id,'title').'</a>》：'.maoo_cut_str(strip_tags($_POST['page']['content']),30);
                             maoo_add_message($user_id,$text);
+                            $term_author = $redis->hget('term:post:'.$_POST['page']['term'],'author');
+                            if($term_author>0 && $user_id!=$term_author) :
+                                $text = '<a href="'.maoo_url('user','index',array('id'=>$user_id)).'">'.maoo_user_display_name($user_id).'</a>在我的话题《<a href="'.maoo_url('post','term',array('id'=>$_POST['page']['term'])).'">'.$redis->hget('term:post:'.$_POST['page']['term'],'title').'</a>》中发表了文章《<a href="'.maoo_url('post','single',array('id'=>$id)).'">'.$redis->hget('post:'.$id,'title').'</a>》：'.maoo_cut_str(strip_tags($_POST['page']['content']),30);
+                                maoo_add_message($term_author,$text);
+                            endif;
 							$url = $redis->get('site_url').'?m=post&a=single&done=发布成功&id='.$id;
 					
 				else :
